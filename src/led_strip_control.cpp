@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <FastLED.h>
+#include <led_strip_control.h>
 
-#define NUM_LEDS 8
 #define DATA_PIN 22
 #define VOLTS          12
 #define MAX_MA       4000
@@ -10,6 +10,10 @@
 
 // This is an array of leds.  One item for each led in your strip.
 CRGB leds[NUM_LEDS];
+
+void led_strip_set() {
+  FastLED.show();
+}
 
 // This function sets up the ledsand tells the controller about them
 void led_strip_setup() {

@@ -15,6 +15,15 @@ void setup() {
   led_strip_setup();
 }
 
+void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[]) {
+  for (int i=0; i<NUM_LEDS; i++) {
+    u_int8_t r = dmx_data[i*3];
+    u_int8_t g = dmx_data[i*3+1];
+    u_int8_t b = dmx_data[i*3+2];
+    leds[i].setRGB(r, g, b);
+  }
+}
+
 void loop() {
     // Read from DMX the individual channel values, blocking, until timeout
     if (read_from_dmx(dmx_data)) {
@@ -27,21 +36,18 @@ void loop() {
             lastUpdate = millis();
         }
 
-        // if magic criteria
-            // run LED animation
-
         set_onboard_led_level(dmx_data[myDMXAddress]);
 
-        if (dmx_data[myDMXAddress] >= 10 and dmx_data[myDMXAddress] <= 20) {
-          Serial.println("Running white along strip...");
-          // delay(1600);
-          run_animation();
-        }
+        // if (dmx_data[myDMXAddress] >= 10 and dmx_data[myDMXAddress] <= 20) {
+        //   Serial.println("Running white along strip...");
+        //   // delay(1600);
+        //   run_animation();
+        // }
 
-        // TODO future stuff
         // Convert from DMX channel data to combined RGB LED data
-        //rgb_led_values = dmx_to_rgb(dmx_channel_data);
+        dmx_to_rgb(dmx_data, leds);
+
         // Set LED strip based on combined RGB LED data
-        //led_strip_set(rgb_led_values);
+        led_strip_set();
     }
 }
