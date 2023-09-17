@@ -14,9 +14,6 @@
 */
 #include <Arduino.h>
 #include <esp_dmx.h>
-#include <White_along_strip.h>
-#include <LEDControl.h>
-
 
 int myDMXAddress = 9;
 
@@ -36,23 +33,7 @@ int enablePin = 21;
   so we shouldn't use that port. Lets use port 1! */
 dmx_port_t dmxPort = 1;
 
-/* Now we want somewhere to store our DMX data. Since a single packet of DMX
-  data can be up to 513 bytes long, we want our array to be at least that long.
-  This library knows that the max DMX packet size is 513, so we can fill in the
-  array size with `DMX_PACKET_SIZE`. */
-byte data[DMX_PACKET_SIZE];
-
-/* The last two variables will allow us to know if DMX has been connected and
-  also to update our packet and print to the Serial Monitor at regular
-  intervals. */
-bool dmxIsConnected = false;
-unsigned long lastUpdate = millis();
-
-void setup() {
-  /* Start the serial connection back to the computer so that we can log
-    messages to the Serial Monitor. Lets set the baud rate to 115200. */
-  Serial.begin(115200);
-
+void dmx_setup() {
   /* Now we will install the DMX driver! We'll tell it which DMX port to use, 
     what device configure to use, and which interrupt priority it should have. 
     If you aren't sure which configuration or interrupt priority to use, you can
@@ -64,11 +45,9 @@ void setup() {
   /* Now set the DMX hardware pins to the pins that we want to use and setup
     will be complete! */
   dmx_set_pin(dmxPort, transmitPin, receivePin, enablePin);
-
-  stripSetup();
 }
 
-void loop() {
+int read_from_dmx(u_int8_t* data) {
   /* We need a place to store information about the DMX packets we receive. We
     will use a dmx_packet_t to store that packet information.  */
   dmx_packet_t packet;
@@ -77,54 +56,23 @@ void loop() {
     officially times out. That amount of time is converted into ESP32 clock
     ticks using the constant `DMX_TIMEOUT_TICK`. If it takes longer than that
     amount of time to receive data, this if statement will evaluate to false. */
-
-  // Serial.println("Receiving DMX...");
-
-  // TickType_t receive_timeout = pdMS_TO_TICKS(12500);
-
-  // int result = dmx_receive(dmxPort, &packet, receive_timeout);
-
-  // Serial.printf("dmx_receive: %d\n", result);
-
-  if (dmx_receive(dmxPort, &packet, DMX_TIMEOUT_TICK)) {
-  // if (result) {
-    /* If this code gets called, it means we've received DMX data! */
-
-    /* Get the current time since boot in milliseconds so that we can find out
+   if (dmx_receive(dmxPort, &packet, DMX_TIMEOUT_TICK)) {
+        /* Get the current time since boot in milliseconds so that we can find out
       how long it has been since we last updated data and printed to the Serial
       Monitor. */
     unsigned long now = millis();
 
     /* We should check to make sure that there weren't any DMX errors. */
     if (!packet.err) {
-      /* If this is the first DMX data we've received, lets log it! */
-      if (!dmxIsConnected) {
-        Serial.println("DMX is connected!");
-        dmxIsConnected = true;
-      }
-
-      /* Don't forget we need to actually read the DMX data into our buffer so
+        /* Don't forget we need to actually read the DMX data into our buffer so
         that we can print it out. */
       dmx_read(dmxPort, data, packet.size);
-
-      if (now - lastUpdate > 100) {
-        /* Print the received start code - it's usually 0. */
-        Serial.printf("Start code is 0x%02X and slot %02X is 0x%02X\n", data[0], myDMXAddress, data[myDMXAddress]);
-
-        setLEDLevel(data[myDMXAddress]);
-
-        if (data[myDMXAddress] >= 10 and data[myDMXAddress] <= 20) {
-          Serial.println("Running white along strip...");
-          // delay(1600);
-          runWhiteAlongStrip();
-        }
-
-        lastUpdate = now;
-      }
-      else {
-        // Serial.println("Too soon");
-      }
+      return 1;
     } else {
+        printf("Packet recieved, but with error\n");
+        return 0;
+    }
+   } else {
       /* Oops! A DMX error occurred! Don't worry, this can happen when you first
         connect or disconnect your DMX devices. If you are consistently getting
         DMX errors, then something may have gone wrong with your code or
@@ -158,17 +106,6 @@ void loop() {
             constantly preempted. */
           break;
       }
+      return 0;
     }
-  } else if (dmxIsConnected) {
-    /* If DMX times out after having been connected, it likely means that the
-      DMX cable was unplugged. When that happens in this example sketch, we'll
-      uninstall the DMX driver. */
-    Serial.println("DMX was disconnected.");
-    // dmx_driver_delete(dmxPort);
-
-    // Serial.println("DMX driver deleted.");
-
-    /* Stop the program. */
-    // while (true) yield();
-  }
 }

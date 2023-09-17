@@ -12,7 +12,7 @@
 CRGB leds[NUM_LEDS];
 
 // This function sets up the ledsand tells the controller about them
-void stripSetup() {
+void led_strip_setup() {
 	// sanity check delay - allows reprogramming if accidently blowing power w/leds
    	delay(2000);
 
@@ -61,7 +61,7 @@ void stripSetup() {
 
 // This function runs over and over, and is where you do the magic to light
 // your leds.
-void runWhiteAlongStrip() {
+void run_animation() {
   // Move a single white led 
   for(int whiteLed = 0; whiteLed < NUM_LEDS; whiteLed = whiteLed + 1) {
     // Turn our current led on to white, then show the leds

@@ -2,6 +2,6 @@
 
 int ledPin = 2;
 
-void setLEDLevel(int value) {
+void set_onboard_led_level(int value) {
   analogWrite(ledPin, value);
 }
