@@ -1,0 +1,3 @@
+
+void stripSetup();
+void runWhiteAlongStrip();

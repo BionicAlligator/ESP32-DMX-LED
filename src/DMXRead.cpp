@@ -14,6 +14,9 @@
 */
 #include <Arduino.h>
 #include <esp_dmx.h>
+#include <White_along_strip.h>
+#include <LEDControl.h>
+
 
 int myDMXAddress = 9;
 
