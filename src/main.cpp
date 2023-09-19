@@ -2,6 +2,8 @@
 #include <led_strip_control.h>
 #include <onboard_led_control.h>
 
+#include <onboard_wifi.h>
+
 u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
 
@@ -9,6 +11,8 @@ void setup() {
   /* Start the serial connection back to the computer so that we can log
     messages to the Serial Monitor. Lets set the baud rate to 115200. */
   Serial.begin(115200);
+
+  wifi_setup();
 
   dmx_setup();
 
