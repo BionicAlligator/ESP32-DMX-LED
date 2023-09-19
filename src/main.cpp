@@ -3,6 +3,7 @@
 #include <onboard_led_control.h>
 
 #include <onboard_wifi.h>
+#include <artnet_read.h>
 
 u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
@@ -13,6 +14,8 @@ void setup() {
   Serial.begin(115200);
 
   wifi_setup();
+
+  artnet_setup();
 
   dmx_setup();
 
