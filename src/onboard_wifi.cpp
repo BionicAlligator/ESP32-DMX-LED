@@ -4,14 +4,14 @@
 #include <WiFi.h>
 #include <local_wifi_password.h>
 
-const char* ssid = LOCAL_WIFI_SSID;
-const char* password = LOCAL_WIFI_PASSWORD;
+const char* _ssid = LOCAL_WIFI_SSID;
+const char* _password = LOCAL_WIFI_PASSWORD;
 
 void wifi_setup() {
   bool state = true;
   int i = 0;
 
-  WiFi.begin(ssid, password);
+  WiFi.begin(_ssid, _password);
   Serial.println("");
   Serial.println("Connecting to WiFi");
   
@@ -28,7 +28,7 @@ void wifi_setup() {
   if (state){
     Serial.println("");
     Serial.print("Connected to ");
-    Serial.println(ssid);
+    Serial.println(_ssid);
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
   } else {

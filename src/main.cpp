@@ -32,6 +32,8 @@ void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[]) {
 }
 
 void loop() {
+  artnet_read();
+
     // Read from DMX the individual channel values, blocking, until timeout
     if (read_from_dmx(dmx_data)) {
         // IF DMX read successfully
