@@ -1,4 +1,8 @@
+#pragma once
 #include <ArtnetWifi.h>
 
+#define ARTNET_MAX_CHANNELS_PER_UNIVERSE 512
+#define ARTNET_MAX_UNIVERSES 1
+
 void artnet_setup();
-void artnet_read();
+int read_from_artnet(u_int8_t*);
