@@ -1,7 +1,8 @@
 
 #include <FastLED.h>
 
-#define NUM_LEDS 8
+#define NUM_LEDS 150
+#define LED_START_CHANNEL 1
 
 extern CRGB leds[];
 

@@ -17,9 +17,9 @@ void setup() {
 
 void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[]) {
   for (int i=0; i<NUM_LEDS; i++) {
-    u_int8_t r = dmx_data[i*3];
-    u_int8_t g = dmx_data[i*3+1];
-    u_int8_t b = dmx_data[i*3+2];
+    u_int8_t r = dmx_data[i * 3 + LED_START_CHANNEL];
+    u_int8_t g = dmx_data[i * 3 + LED_START_CHANNEL + 1];
+    u_int8_t b = dmx_data[i * 3 + LED_START_CHANNEL + 2];
     leds[i].setRGB(r, g, b);
   }
 }
