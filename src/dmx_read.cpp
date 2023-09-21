@@ -56,7 +56,7 @@ int read_from_dmx(u_int8_t* data) {
     officially times out. That amount of time is converted into ESP32 clock
     ticks using the constant `DMX_TIMEOUT_TICK`. If it takes longer than that
     amount of time to receive data, this if statement will evaluate to false. */
-   if (dmx_receive(dmxPort, &packet, DMX_TIMEOUT_TICK)) {
+   if (dmx_receive(dmxPort, &packet, pdMS_TO_TICKS(50))) {
         /* Get the current time since boot in milliseconds so that we can find out
       how long it has been since we last updated data and printed to the Serial
       Monitor. */

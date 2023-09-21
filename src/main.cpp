@@ -2,6 +2,9 @@
 #include <led_strip_control.h>
 #include <onboard_led_control.h>
 
+#include <onboard_wifi.h>
+#include <artnet_read.h>
+
 u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
 
@@ -9,6 +12,10 @@ void setup() {
   /* Start the serial connection back to the computer so that we can log
     messages to the Serial Monitor. Lets set the baud rate to 115200. */
   Serial.begin(115200);
+
+  wifi_setup();
+
+  artnet_setup();
 
   dmx_setup();
 
@@ -25,6 +32,11 @@ void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[]) {
 }
 
 void loop() {
+  bool use_artnet = true; // Toggle between artnet and dmx
+
+  if (use_artnet) {
+    read_from_artnet(dmx_data);
+  } else {
     // Read from DMX the individual channel values, blocking, until timeout
     if (read_from_dmx(dmx_data)) {
         // IF DMX read successfully
@@ -35,19 +47,20 @@ void loop() {
             Serial.printf("Start code is 0x%02X and slot %02X is 0x%02X\n", dmx_data[0], myDMXAddress, dmx_data[myDMXAddress]);
             lastUpdate = millis();
         }
-
-        set_onboard_led_level(dmx_data[myDMXAddress]);
-
-        // if (dmx_data[myDMXAddress] >= 10 and dmx_data[myDMXAddress] <= 20) {
-        //   Serial.println("Running white along strip...");
-        //   // delay(1600);
-        //   run_animation();
-        // }
-
-        // Convert from DMX channel data to combined RGB LED data
-        dmx_to_rgb(dmx_data, leds);
-
-        // Set LED strip based on combined RGB LED data
-        led_strip_set();
     }
+  }
+
+  set_onboard_led_level(dmx_data[myDMXAddress]);
+
+  // if (dmx_data[myDMXAddress] >= 10 and dmx_data[myDMXAddress] <= 20) {
+  //   Serial.println("Running white along strip...");
+  //   // delay(1600);
+  //   run_animation();
+  // }
+
+  // Convert from DMX channel data to combined RGB LED data
+  dmx_to_rgb(dmx_data, leds);
+
+  // Set LED strip based on combined RGB LED data
+  led_strip_set();
 }
