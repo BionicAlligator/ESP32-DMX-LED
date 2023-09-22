@@ -8,6 +8,35 @@
 u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
 
+/* =-=-=-= BACKLOG OF WORK =-=-=-= */
+
+/* Artnet only
+ - Drop DMX support for now (add back later, time permitting)
+ - Architect main control loop for Artnet only
+*/
+
+/* Graceful Artnet degradation
+ - When Artnet updates are not occuring, do something sensible
+ - When Wifi isn't available (or drops out), do something sensible
+ - Fire test in wifi-congested areas
+*/
+
+/* Full LED string support
+ - Support the longest LED string that Vincent has (300 LED?)
+*/
+
+/* Production build for v1.0.0
+ - Build final firmware for upcoming deployment
+ - Smoke test
+*/
+
+/* LED string mounting
+ - Flexibly mount LED strings on stages
+*/
+
+/* Deployment: Battle of the bands
+*/
+
 void setup() {
   /* Start the serial connection back to the computer so that we can log
     messages to the Serial Monitor. Lets set the baud rate to 115200. */
