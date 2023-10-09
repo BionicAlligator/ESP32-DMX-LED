@@ -51,6 +51,7 @@ int write_to_dmx(u_int8_t* data) {
   dmx_write(dmxPort, data, DMX_PACKET_SIZE);
   dmx_send(dmxPort, DMX_PACKET_SIZE);
   dmx_wait_sent(dmxPort, DMX_TIMEOUT_TICK);
+  return 0;
 }
 
 int read_from_dmx(u_int8_t* data) {
