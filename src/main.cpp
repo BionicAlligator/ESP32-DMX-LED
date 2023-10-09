@@ -8,6 +8,24 @@
 u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
 
+/* =-=-=-= 2023-10-09 Sprint backlog.  Goal ESP32 Artnet Wifi node  =-=-=-= */
+
+// DONE Andrew's local setup vscode (can flash esp32 from vscode)
+
+// DONE Andrew's local setup for MagicQ
+
+// DONE Board setup: ESP32 sender
+
+// DONE Board setup: ESP32 reciever
+
+// DONE New feature branch
+
+// IN PROGRESS Code: Artnet to DMX
+
+// Code: DMX to LED
+
+
+
 /* =-=-=-= BACKLOG OF WORK =-=-=-= */
 
 /* Artnet only
@@ -65,6 +83,7 @@ void loop() {
 
   if (use_artnet) {
     read_from_artnet(dmx_data);
+    write_to_dmx(dmx_data);
   } else {
     // Read from DMX the individual channel values, blocking, until timeout
     if (read_from_dmx(dmx_data)) {

@@ -47,6 +47,12 @@ void dmx_setup() {
   dmx_set_pin(dmxPort, transmitPin, receivePin, enablePin);
 }
 
+int write_to_dmx(u_int8_t* data) {
+  dmx_write(dmxPort, data, DMX_PACKET_SIZE);
+  dmx_send(dmxPort, DMX_PACKET_SIZE);
+  dmx_wait_sent(dmxPort, DMX_TIMEOUT_TICK);
+}
+
 int read_from_dmx(u_int8_t* data) {
   /* We need a place to store information about the DMX packets we receive. We
     will use a dmx_packet_t to store that packet information.  */
