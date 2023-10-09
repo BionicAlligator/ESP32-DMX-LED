@@ -22,7 +22,7 @@ unsigned long lastUpdate = millis();
 
 // IN PROGRESS Code: Artnet to DMX
 
-// Code: DMX to LED
+// IN PROGRESS Code: DMX to LED
 
 
 
