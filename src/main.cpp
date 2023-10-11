@@ -20,13 +20,20 @@ unsigned long lastUpdate = millis();
 
 // DONE New feature branch
 
-// IN PROGRESS Code: Artnet to DMX
+// DONE Code: Artnet to DMX
 
-// IN PROGRESS Code: DMX to LED
-
-
+// DONE Code: DMX to LED
 
 /* =-=-=-= BACKLOG OF WORK =-=-=-= */
+
+// Tidy up code
+// Figure out how to power (not via Micro USB)
+// Create case
+// Add second DMX port
+// Test with actual lights
+// Document
+
+// TO REVIEW...
 
 /* Artnet only
  - Drop DMX support for now (add back later, time permitting)
@@ -53,9 +60,10 @@ unsigned long lastUpdate = millis();
 */
 
 /* Deployment: Battle of the bands
-*/
+ */
 
-void setup() {
+void setup()
+{
   /* Start the serial connection back to the computer so that we can log
     messages to the Serial Monitor. Lets set the baud rate to 115200. */
   Serial.begin(115200);
@@ -69,8 +77,10 @@ void setup() {
   led_strip_setup();
 }
 
-void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[]) {
-  for (int i=0; i<NUM_LEDS; i++) {
+void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[])
+{
+  for (int i = 0; i < NUM_LEDS; i++)
+  {
     u_int8_t r = dmx_data[i * 3 + LED_START_CHANNEL];
     u_int8_t g = dmx_data[i * 3 + LED_START_CHANNEL + 1];
     u_int8_t b = dmx_data[i * 3 + LED_START_CHANNEL + 2];
@@ -78,23 +88,31 @@ void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[]) {
   }
 }
 
-void loop() {
-  bool use_artnet = true; // Toggle between artnet and dmx
+void loop()
+{
+  // Should we operate as a WiFi Art-Net node, reading Art-Net over WiFi and re-transmitting it as DMX?
+  // If false, we will act as a DMX receiver, reading DMX and controlling an LED strip
+  bool artnet_node = true;
 
-  if (use_artnet) {
+  if (artnet_node)
+  {
     read_from_artnet(dmx_data);
     write_to_dmx(dmx_data);
-  } else {
+  }
+  else
+  {
     // Read from DMX the individual channel values, blocking, until timeout
-    if (read_from_dmx(dmx_data)) {
-        // IF DMX read successfully
+    if (read_from_dmx(dmx_data))
+    {
+      // IF DMX read successfully
 
-        // Periodically log dmx received data
-         if (millis() - lastUpdate > 100) {
-            /* Print the received start code - it's usually 0. */
-            Serial.printf("Start code is 0x%02X and slot %02X is 0x%02X\n", dmx_data[0], myDMXAddress, dmx_data[myDMXAddress]);
-            lastUpdate = millis();
-        }
+      // Periodically log dmx received data
+      if (millis() - lastUpdate > 100)
+      {
+        /* Print the received start code - it's usually 0. */
+        Serial.printf("Start code is 0x%02X and slot %02X is 0x%02X\n", dmx_data[0], myDMXAddress, dmx_data[myDMXAddress]);
+        lastUpdate = millis();
+      }
     }
   }
 
