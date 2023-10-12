@@ -5,39 +5,33 @@
 #include <onboard_wifi.h>
 #include <artnet_read.h>
 
+// Should we operate as a WiFi Art-Net node, reading Art-Net over WiFi and re-transmitting it as DMX?
+// If false, we will act as a DMX receiver
+const bool ARTNET_NODE = true;
+const bool LED_STRIP_CONTROL = false;
+
 u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
 
-/* =-=-=-= 2023-10-09 Sprint backlog.  Goal ESP32 Artnet Wifi node  =-=-=-= */
-
-// DONE Andrew's local setup vscode (can flash esp32 from vscode)
-
-// DONE Andrew's local setup for MagicQ
-
-// DONE Board setup: ESP32 sender
-
-// DONE Board setup: ESP32 reciever
-
-// DONE New feature branch
-
-// DONE Code: Artnet to DMX
-
-// DONE Code: DMX to LED
-
 /* =-=-=-= BACKLOG OF WORK =-=-=-= */
 
+// Sprint Goal: know we are ready to run the show (box created and tested with real lights, ideally with audience)
 // Tidy up code
-// Figure out how to power (not via Micro USB)
-// Create case
-// Add second DMX port
+// Configure Router and PC (SSID, Password, Physical Location)
+// Create case (final assembly)
 // Test with actual lights
+
+// MDNS Setup
+//    Remote debug
+
+// Add second DMX port
 // Document
 
 // TO REVIEW...
 
-/* Artnet only
- - Drop DMX support for now (add back later, time permitting)
- - Architect main control loop for Artnet only
+/* Production build for v1.0.0
+ - Build final firmware for upcoming deployment
+ - Smoke test
 */
 
 /* Graceful Artnet degradation
@@ -46,13 +40,11 @@ unsigned long lastUpdate = millis();
  - Fire test in wifi-congested areas
 */
 
+/* Deployment: We Will Rock You!
+ */
+
 /* Full LED string support
  - Support the longest LED string that Vincent has (300 LED?)
-*/
-
-/* Production build for v1.0.0
- - Build final firmware for upcoming deployment
- - Smoke test
 */
 
 /* LED string mounting
@@ -74,30 +66,16 @@ void setup()
 
   dmx_setup();
 
-  led_strip_setup();
-}
-
-void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[])
-{
-  for (int i = 0; i < NUM_LEDS; i++)
-  {
-    u_int8_t r = dmx_data[i * 3 + LED_START_CHANNEL];
-    u_int8_t g = dmx_data[i * 3 + LED_START_CHANNEL + 1];
-    u_int8_t b = dmx_data[i * 3 + LED_START_CHANNEL + 2];
-    leds[i].setRGB(r, g, b);
-  }
+  if (LED_STRIP_CONTROL)
+    led_strip_setup();
 }
 
 void loop()
 {
-  // Should we operate as a WiFi Art-Net node, reading Art-Net over WiFi and re-transmitting it as DMX?
-  // If false, we will act as a DMX receiver, reading DMX and controlling an LED strip
-  bool artnet_node = true;
-
-  if (artnet_node)
+  if (ARTNET_NODE)
   {
-    read_from_artnet(dmx_data);
-    write_to_dmx(dmx_data);
+    if (read_from_artnet(dmx_data))
+      write_to_dmx(dmx_data);
   }
   else
   {
@@ -116,17 +94,24 @@ void loop()
     }
   }
 
+  // Status LED Modes:
+  //   No WiFi (doesn't apply in hardwired DMX mode)
+  //   No Art-Net / No DMX (dependent on mode)
+  //   No LED strip found
   set_onboard_led_level(dmx_data[myDMXAddress]);
 
-  // if (dmx_data[myDMXAddress] >= 10 and dmx_data[myDMXAddress] <= 20) {
-  //   Serial.println("Running white along strip...");
-  //   // delay(1600);
-  //   run_animation();
-  // }
+  if (LED_STRIP_CONTROL)
+  {
+    // if (dmx_data[myDMXAddress] >= 10 and dmx_data[myDMXAddress] <= 20) {
+    //   Serial.println("Running white along strip...");
+    //   // delay(1600);
+    //   run_animation();
+    // }
 
-  // Convert from DMX channel data to combined RGB LED data
-  dmx_to_rgb(dmx_data, leds);
+    // Convert from DMX channel data to combined RGB LED data
+    dmx_to_rgb(dmx_data, leds);
 
-  // Set LED strip based on combined RGB LED data
-  led_strip_set();
+    // Set LED strip based on combined RGB LED data
+    led_strip_set();
+  }
 }

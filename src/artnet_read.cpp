@@ -1,7 +1,7 @@
 #include <artnet_read.h>
 
 // Set to true to print to serial console DMX frames
-#define ARTNET_DMX_DEBUG true
+const bool ARTNET_DMX_DEBUG = true;
 
 ArtnetWifi _artnet;
 
@@ -53,6 +53,7 @@ void _onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t *
     // Artnet frame is for a universe that we cannot store in our data structure
     // Ignore
   }
+
   if (ARTNET_DMX_DEBUG)
     artnet_dmx_debug(universe, length, sequence, data);
 }
@@ -65,17 +66,21 @@ void artnet_setup()
 
 int read_from_artnet(u_int8_t *data)
 {
-  /* Add in DMX Start Code because the data passed from Art-Net doesn't include it*/
-  data[0] = 0;
-
   /* read() returns 0 if there are no new DMX frames.  If there are new frames, it calls our _onDmxFrame() callback but only once per read()*/
   if (_artnet.read() == ART_DMX)
   {
+    /* Add in DMX Start Code because the data passed from Art-Net doesn't include it*/
+    data[0] = 0;
+
     uint16_t channels = (ARTNET_MAX_CHANNELS_PER_UNIVERSE < 512) ? ARTNET_MAX_CHANNELS_PER_UNIVERSE : 512;
+  
     for (u_int16_t c = 0; c < channels; c++)
     {
       data[c + 1] = artnet_dmx_frames[0][c];
     }
+
+    return 1;
   }
+
   return 0;
 }
