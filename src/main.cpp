@@ -53,6 +53,7 @@ void setup() {
   led_strip_setup();
 
   web_interface_setup();
+  web_interface_append("Setup complete");
 }
 
 void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[]) {
