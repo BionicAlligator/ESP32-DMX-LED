@@ -66,6 +66,8 @@ void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[]) {
 }
 
 void loop() {
+  web_interface_loop();
+  
   bool use_artnet = true; // Toggle between artnet and dmx
 
   if (use_artnet) {

@@ -3,13 +3,24 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
+#include <WiFiUdp.h>
+#include <ArduinoMDNS.h>
+
 #include <web_interface.h>
+
+WiFiUDP udp;
+MDNS mdns(udp);
 
 #define TEXT_BUFFER_SIZE 1024
 
 AsyncWebServer server(80);
 char text_buffer[TEXT_BUFFER_SIZE+1];
 int next_writable_index=0;
+
+/* Must call this on main loop */
+void web_interface_loop() {
+  mdns.run();
+}
 
 void web_interface_append(const String& text) {
   /* Do not copy null termination character from text */
@@ -39,6 +50,9 @@ void notFound(AsyncWebServerRequest *request) {
 }
 
 void web_interface_setup() {
+  /* Respond to MDNS queries for artnet.local */
+  mdns.begin(WiFi.localIP(), "artnet");
+
   /* Insure null termination of string */
   text_buffer[TEXT_BUFFER_SIZE] = '\0';
 
