@@ -5,6 +5,8 @@
 #include <onboard_wifi.h>
 #include <artnet_read.h>
 
+#include <web_interface.h>
+
 u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
 
