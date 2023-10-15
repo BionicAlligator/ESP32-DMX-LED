@@ -1,9 +1,9 @@
 #include <dmx_read.h>
 #include <led_strip_control.h>
 #include <onboard_led_control.h>
-
 #include <onboard_wifi.h>
 #include <artnet_read.h>
+#include <web_interface.h>
 
 // Should we operate as a WiFi Art-Net node, reading Art-Net over WiFi and re-transmitting it as DMX?
 // If false, we will act as a DMX receiver
@@ -68,10 +68,15 @@ void setup()
 
   if (LED_STRIP_CONTROL)
     led_strip_setup();
+
+  web_interface_setup();
+  web_interface_append("Setup complete");
 }
 
 void loop()
 {
+  web_interface_loop();
+
   if (ARTNET_NODE)
   {
     if (read_from_artnet(dmx_data))
