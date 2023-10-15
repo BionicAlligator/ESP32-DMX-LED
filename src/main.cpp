@@ -5,6 +5,8 @@
 #include <onboard_wifi.h>
 #include <artnet_read.h>
 
+#include <web_interface.h>
+
 u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
 
@@ -49,6 +51,9 @@ void setup() {
   dmx_setup();
 
   led_strip_setup();
+
+  web_interface_setup();
+  web_interface_append("Setup complete");
 }
 
 void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[]) {
@@ -61,6 +66,8 @@ void dmx_to_rgb(u_int8_t dmx_data[], CRGB leds[]) {
 }
 
 void loop() {
+  web_interface_loop();
+  
   bool use_artnet = true; // Toggle between artnet and dmx
 
   if (use_artnet) {
