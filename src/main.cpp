@@ -1,9 +1,9 @@
 #include <dmx_read.h>
 #include <led_strip_control.h>
 #include <onboard_led_control.h>
-#include <onboard_wifi.h>
 #include <artnet_read.h>
 #include <web_interface.h>
+#include <wifi_manager.h>
 
 // Should we operate as a WiFi Art-Net node, reading Art-Net over WiFi and re-transmitting it as DMX?
 // If false, we will act as a DMX receiver
@@ -60,7 +60,7 @@ void setup()
     messages to the Serial Monitor. Lets set the baud rate to 115200. */
   Serial.begin(115200);
 
-  wifi_setup();
+  wifi_manager_setup();
 
   artnet_setup();
 
