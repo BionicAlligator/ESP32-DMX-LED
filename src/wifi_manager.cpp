@@ -4,7 +4,8 @@
 #include <ESPAsyncWiFiManager.h>
 #include <ArduinoJson.h> //https://github.com/bblanchon/ArduinoJson
 
-AsyncWebServer wifi_manager_server(80);
+#include <web_interface.h>
+
 DNSServer wifi_manager_dns;
 char wifi_manager_universe[2];
 
@@ -61,17 +62,18 @@ void wifi_manager_setup()
   }
   else
   {
-    Serial.println("failed to mount FS");
+    Serial.println("failed to mount FS.  Formatting");
+    SPIFFS.format();
   }
   // end read
 
-  AsyncWiFiManager wifi_manager(&wifi_manager_server, &wifi_manager_dns);
+  AsyncWiFiManager wifi_manager(&server, &wifi_manager_dns);
   AsyncWiFiManagerParameter wifi_manager_param_universe("universe", "Art-Net to DMX Universe", wifi_manager_universe, 2);
   wifi_manager.setSaveConfigCallback(saveConfigCallback);
   wifi_manager.addParameter(&wifi_manager_param_universe);
 
   // reset settings - for testing
-  // wifi_manager.resetSettings();
+  //wifi_manager.resetSettings();
 
   // fetches ssid and pass and tries to connect
   // if it does not connect it starts an access point with the specified name
@@ -103,17 +105,26 @@ void wifi_manager_setup()
 
     json["wifi_manager_universe"] = wifi_manager_universe;
 
-    File configFile = SPIFFS.open("/config.json", "w");
-
-    if (!configFile)
+    if (SPIFFS.begin())
     {
-      Serial.println("Failed to open config file for writing");
+      File configFile = SPIFFS.open("/config.json", "w");
+
+      if (!configFile)
+      {
+        Serial.println("Failed to open config file for writing");
+      }
+      else
+      {
+        Serial.print("JSON config file: ");
+        json.printTo(Serial);
+        json.printTo(configFile);
+        configFile.close();
+      }
     }
     else
     {
-      json.printTo(Serial);
-      json.printTo(configFile);
-      configFile.close();
+      Serial.println("failed to mount FS.  Formatting");
+      SPIFFS.format();
     }
   }
 }
