@@ -9,6 +9,8 @@
 DNSServer wifi_manager_dns;
 char wifi_manager_universe[2];
 
+AsyncWiFiManager wifi_manager(&server, &wifi_manager_dns);
+
 // flag for saving data
 bool shouldSaveConfig = false;
 
@@ -17,6 +19,18 @@ void saveConfigCallback()
 {
   Serial.println("Should save config");
   shouldSaveConfig = true;
+}
+
+void wifi_manager_web_reset(AsyncWebServerRequest *request) {
+  Serial.println("Resetting wifi manager settings");
+  wifi_manager.resetSettings();
+  Serial.println("Wifi manager settings reset");
+  request->send(200, "text/plain", "Wifi manager settings reset");
+}
+
+void register_reset_page_with_web_server() {
+  Serial.println("Registering wifi manager reset at URL /reset");
+  server.on("/reset", HTTP_ANY, wifi_manager_web_reset);
 }
 
 void wifi_manager_setup()
@@ -67,13 +81,10 @@ void wifi_manager_setup()
   }
   // end read
 
-  AsyncWiFiManager wifi_manager(&server, &wifi_manager_dns);
+
   AsyncWiFiManagerParameter wifi_manager_param_universe("universe", "Art-Net to DMX Universe", wifi_manager_universe, 2);
   wifi_manager.setSaveConfigCallback(saveConfigCallback);
   wifi_manager.addParameter(&wifi_manager_param_universe);
-
-  // reset settings - for testing
-  //wifi_manager.resetSettings();
 
   // fetches ssid and pass and tries to connect
   // if it does not connect it starts an access point with the specified name
@@ -127,4 +138,6 @@ void wifi_manager_setup()
       SPIFFS.format();
     }
   }
+
+  register_reset_page_with_web_server();
 }
