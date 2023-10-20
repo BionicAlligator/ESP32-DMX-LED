@@ -26,7 +26,8 @@ void wifi_manager_web_reset(AsyncWebServerRequest *request) {
   Serial.println("Resetting wifi manager settings");
   wifi_manager.resetSettings();
   Serial.println("Wifi manager settings reset");
-  request->send(200, "text/plain", "Wifi manager settings reset");
+  request->send(200, "text/plain", "Wifi manager settings reset.  Will restart");
+  ESP.restart();
 }
 
 void register_reset_page_with_web_server() {
@@ -41,7 +42,7 @@ void spiffs_begin_reformatting_if_necessary() {
 void wifi_manager_setup()
 {
   // read configuration from FS json and store in wifi_manager_universe
-  spiff_config_get("wifi_manager_universe").toCharArray(wifi_manager_universe, 3);
+  spiffs_config_get("wifi_manager_universe").toCharArray(wifi_manager_universe, 3);
 
   AsyncWiFiManagerParameter wifi_manager_param_universe("universe", "Art-Net to DMX Universe", wifi_manager_universe, 2);
   wifi_manager.setSaveConfigCallback(saveConfigCallback);
@@ -68,7 +69,7 @@ void wifi_manager_setup()
   // save the custom parameters to FS
   if (shouldSaveConfig)
   {
-    spiff_config_set("wifi_manager_universe", wifi_manager_param_universe.getValue());
+    spiffs_config_set("wifi_manager_universe", wifi_manager_param_universe.getValue());
   }
 
   register_reset_page_with_web_server();

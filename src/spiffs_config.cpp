@@ -7,7 +7,7 @@ void spiffs_config_begin_and_reformat_if_necessary() {
   SPIFFS.begin(true);
 }
 
-String spiff_config_get(String name) {
+String spiffs_config_get(String name) {
   Serial.println("mounting FS...");
   spiffs_config_begin_and_reformat_if_necessary();
 
@@ -46,7 +46,7 @@ String spiff_config_get(String name) {
   return (String) NULL; // TODO something better than returning nulls
 }
 
-void spiff_config_set(String name, String value) {
+void spiffs_config_set(String name, String value) {
   Serial.println("Saving config");
   spiffs_config_begin_and_reformat_if_necessary();
 
