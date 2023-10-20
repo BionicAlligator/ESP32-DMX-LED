@@ -5,6 +5,7 @@
 #include <ArduinoJson.h> //https://github.com/bblanchon/ArduinoJson
 
 #include <web_interface.h>
+#include <spiffs_config.h>
 
 DNSServer wifi_manager_dns;
 char wifi_manager_universe[2];
@@ -33,54 +34,14 @@ void register_reset_page_with_web_server() {
   server.on("/reset", HTTP_ANY, wifi_manager_web_reset);
 }
 
+void spiffs_begin_reformatting_if_necessary() {
+  !SPIFFS.begin(true);
+}
+
 void wifi_manager_setup()
 {
-  // clean FS, for testing
-  // SPIFFS.format();
-
-  // read configuration from FS json
-  Serial.println("mounting FS...");
-
-  if (SPIFFS.begin())
-  {
-    Serial.println("mounted file system");
-    if (SPIFFS.exists("/config.json"))
-    {
-      // file exists, reading and loading
-      Serial.println("reading config file");
-      File configFile = SPIFFS.open("/config.json", "r");
-      if (configFile)
-      {
-        Serial.println("opened config file");
-        size_t size = configFile.size();
-        // Allocate a buffer to store contents of the file.
-        std::unique_ptr<char[]> buf(new char[size]);
-
-        configFile.readBytes(buf.get(), size);
-        DynamicJsonBuffer jsonBuffer;
-        JsonObject &json = jsonBuffer.parseObject(buf.get());
-        json.printTo(Serial);
-
-        if (json.success())
-        {
-          Serial.println("\nparsed json");
-
-          strcpy(wifi_manager_universe, json["wifi_manager_universe"]);
-        }
-        else
-        {
-          Serial.println("failed to load json config");
-        }
-      }
-    }
-  }
-  else
-  {
-    Serial.println("failed to mount FS.  Formatting");
-    SPIFFS.format();
-  }
-  // end read
-
+  // read configuration from FS json and store in wifi_manager_universe
+  spiff_config_get("wifi_manager_universe").toCharArray(wifi_manager_universe, 3);
 
   AsyncWiFiManagerParameter wifi_manager_param_universe("universe", "Art-Net to DMX Universe", wifi_manager_universe, 2);
   wifi_manager.setSaveConfigCallback(saveConfigCallback);
@@ -107,36 +68,7 @@ void wifi_manager_setup()
   // save the custom parameters to FS
   if (shouldSaveConfig)
   {
-    Serial.println("Saving config");
-
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject &json = jsonBuffer.createObject();
-
-    strcpy(wifi_manager_universe, wifi_manager_param_universe.getValue());
-
-    json["wifi_manager_universe"] = wifi_manager_universe;
-
-    if (SPIFFS.begin())
-    {
-      File configFile = SPIFFS.open("/config.json", "w");
-
-      if (!configFile)
-      {
-        Serial.println("Failed to open config file for writing");
-      }
-      else
-      {
-        Serial.print("JSON config file: ");
-        json.printTo(Serial);
-        json.printTo(configFile);
-        configFile.close();
-      }
-    }
-    else
-    {
-      Serial.println("failed to mount FS.  Formatting");
-      SPIFFS.format();
-    }
+    spiff_config_set("wifi_manager_universe", wifi_manager_param_universe.getValue());
   }
 
   register_reset_page_with_web_server();
