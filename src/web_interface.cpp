@@ -61,12 +61,16 @@ void notFound(AsyncWebServerRequest *request)
 
 void web_interface_setup()
 {
-  /* Respond to MDNS queries for artnet-<MACADDRESS>.local, or configured hostname.local */
+  /* Respond to MDNS queries for artnet.local, or configured hostname.local */
   String web_interface_param_mdns_hostname = spiffs_config_get("wifi_manager_mdns_hostname");
-  if (&web_interface_param_mdns_hostname==NULL || web_interface_param_mdns_hostname.equals("")) {
+
+  if (&web_interface_param_mdns_hostname == NULL || web_interface_param_mdns_hostname.equals(""))
+  {
     Serial.println("Using MDNS hostname artnet.local");
     mdns.begin(WiFi.localIP(), "artnet");
-  } else {
+  }
+  else
+  {
     Serial.println("Using MDNS hostname " + web_interface_param_mdns_hostname);
     mdns.begin(WiFi.localIP(), web_interface_param_mdns_hostname.c_str());
   }
