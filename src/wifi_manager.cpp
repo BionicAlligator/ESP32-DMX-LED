@@ -9,6 +9,7 @@
 
 DNSServer wifi_manager_dns;
 char wifi_manager_dmx_port1_artnet_universe[3];
+char wifi_manager_mdns_hostname[255];
 
 AsyncWiFiManager wifi_manager(&server, &wifi_manager_dns);
 
@@ -54,8 +55,10 @@ void wifi_manager_setup()
   spiffs_config_get("wifi_manager_dmx_port1_artnet_universe").toCharArray(wifi_manager_dmx_port1_artnet_universe, 3);
 
   AsyncWiFiManagerParameter wifi_manager_param_dmx_port1_artnet_universe("universe", "DMX Port 1 Art-Net Universe", wifi_manager_dmx_port1_artnet_universe, 2);
+  AsyncWiFiManagerParameter wifi_manager_param_mdns_hostname("mdns_hostname", "MDNS Hostname", wifi_manager_mdns_hostname, 255);
   wifi_manager.setSaveConfigCallback(saveConfigCallback);
   wifi_manager.addParameter(&wifi_manager_param_dmx_port1_artnet_universe);
+  wifi_manager.addParameter(&wifi_manager_param_mdns_hostname);
 
   // fetches ssid and password and tries to connect
   // if it does not connect it starts an access point with the specified name
@@ -72,11 +75,16 @@ void wifi_manager_setup()
 
   Serial.print("Done with autoconnect...  Universe Selected: ");
   Serial.println(wifi_manager_param_dmx_port1_artnet_universe.getValue());
+  Serial.println();
+  Serial.print("MDNS Hostname:");
+  Serial.println(wifi_manager_param_mdns_hostname.getValue());
+  Serial.println();
 
   // save the custom parameters to FS
   if (shouldSaveConfig)
   {
     spiffs_config_set("wifi_manager_dmx_port1_artnet_universe", wifi_manager_param_dmx_port1_artnet_universe.getValue());
+    spiffs_config_set("wifi_manager_mdns_hostname", wifi_manager_param_mdns_hostname.getValue());
   }
 
   register_reset_page_with_web_server();

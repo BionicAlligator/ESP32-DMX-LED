@@ -25,7 +25,7 @@ unsigned long lastUpdate = millis();
 // DONE Web universe config
 // DONE Test with actual lights
 // DONE Test during school assemblies (with full audience)
-// Web DNS name config
+// DONE Web DNS name config
 
 // DONE Install 5V LED
 // Test transmit and receive of second device
