@@ -16,15 +16,30 @@ unsigned long lastUpdate = millis();
 /* =-=-=-= BACKLOG OF WORK =-=-=-= */
 
 // Sprint Goal: know we are ready to run the show (box created and tested with real lights, ideally with audience)
-// Tidy up code
-// Configure Router and PC (SSID, Password, Physical Location)
-// Create case (final assembly)
-// Test with actual lights
+// DONE Tidy up code
+// NOT OUR PROBLEM Configure Router and PC (SSID, Password, Physical Location)
+// DONE Create case (final assembly)
+// DONE MDNS
+// DONE Web Interface
+// DONE First Time Setup (Interactive WiFi Initialisation)
+// DONE Web universe config
+// DONE Test with actual lights
+// DONE Test during school assemblies (with full audience)
+// Web DNS name config
 
-// MDNS Setup
-//    Remote debug
+// DONE Install 5V LED
+// Test transmit and receive of second device
+// Complete physical build of second device
+// Create and freeze Release 1 code version
 
-// Add second DMX port
+// Web debug console (display log messages)
+// Rename DMX files
+// Tidy code
+
+// Web Mode config (RX/TX)
+// Web LED strip control
+
+// Second DMX port
 // Document
 
 // TO REVIEW...
