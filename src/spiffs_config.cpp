@@ -84,3 +84,7 @@ void spiffs_config_set(String name, String value)
     }
   }
 }
+
+void spiffs_config_clear() {
+  SPIFFS.remove("/config.json");
+}

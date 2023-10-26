@@ -26,7 +26,8 @@ void saveConfigCallback()
 void wifi_manager_web_reset(AsyncWebServerRequest *request)
 {
   Serial.println("Resetting wifi manager settings");
-  request->send(200, "text/plain", "Clearing WiFi config.  Search for \"Art-Net Wifi\" access point to perform first-time setup.  Will restart in 10 seconds.  CLOSE YOUR BROWSER NOW.");
+  request->send(200, "text/plain", "Clearing WiFi and device config.  Search for \"Art-Net Wifi\" access point to perform first-time setup.  Will restart in 10 seconds.  CLOSE YOUR BROWSER NOW.");
+  spiffs_config_clear();  
   // Delay required to ensure HTTP response has time to get back to browser before we cut the WiFi connection.
   // 1 second is too short.  10 seconds works but might be overkill.
   delay(10000);
