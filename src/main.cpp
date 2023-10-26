@@ -29,10 +29,10 @@ unsigned long lastUpdate = millis();
 
 // DONE Install 5V LED
 // DONE Test DMX transmit and receive with second device
-// Complete physical build of second device
-// Create and freeze Release 1 code version
-
 // Web debug console (display log messages)
+// Create and freeze Release 1 code version
+// Complete physical build of second device
+
 // Rename DMX files
 // Tidy code
 
