@@ -28,7 +28,7 @@ unsigned long lastUpdate = millis();
 // Web DNS name config
 
 // DONE Install 5V LED
-// Test transmit and receive of second device
+// DONE Test DMX transmit and receive with second device
 // Complete physical build of second device
 // Create and freeze Release 1 code version
 
@@ -36,6 +36,8 @@ unsigned long lastUpdate = millis();
 // Rename DMX files
 // Tidy code
 
+// Fix orange wire on first device (used when receiving)
+// Test second device as a receiver
 // Web Mode config (RX/TX)
 // Web LED strip control
 
