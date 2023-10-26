@@ -7,6 +7,7 @@
 #include <ArduinoMDNS.h>
 
 #include <web_interface.h>
+#include <spiffs_config.h>
 
 WiFiUDP udp;
 MDNS mdns(udp);
@@ -60,8 +61,19 @@ void notFound(AsyncWebServerRequest *request)
 
 void web_interface_setup()
 {
-  /* Respond to MDNS queries for artnet.local */
-  mdns.begin(WiFi.localIP(), "artnet");
+  /* Respond to MDNS queries for artnet.local, or configured hostname.local */
+  String web_interface_param_mdns_hostname = spiffs_config_get("wifi_manager_mdns_hostname");
+
+  if (&web_interface_param_mdns_hostname == NULL || web_interface_param_mdns_hostname.equals(""))
+  {
+    Serial.println("Using MDNS hostname artnet.local");
+    mdns.begin(WiFi.localIP(), "artnet");
+  }
+  else
+  {
+    Serial.println("Using MDNS hostname " + web_interface_param_mdns_hostname);
+    mdns.begin(WiFi.localIP(), web_interface_param_mdns_hostname.c_str());
+  }
 
   /* Insure null termination of string */
   text_buffer[TEXT_BUFFER_SIZE] = '\0';
@@ -70,7 +82,7 @@ void web_interface_setup()
             {   Serial.print("Text buffer: |");
   Serial.print(text_buffer);
   Serial.println("|");
-request->send(200, "text/plain", text_buffer); });
+  request->send(200, "text/plain", text_buffer); });
 
   server.onNotFound(notFound);
 
