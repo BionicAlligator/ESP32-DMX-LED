@@ -3,14 +3,15 @@
 #include <ArduinoJson.h> //https://github.com/bblanchon/ArduinoJson
 #include <WString.h>
 
-void spiffs_config_begin_and_reformat_if_necessary() {
+void spiffs_config_begin_and_reformat_if_necessary()
+{
   SPIFFS.begin(true);
 }
 
-String spiffs_config_get(String name) {
+String spiffs_config_get(String name)
+{
   Serial.println("mounting FS...");
   spiffs_config_begin_and_reformat_if_necessary();
-
 
   Serial.println("mounted file system");
   if (SPIFFS.exists("/config.json"))
@@ -43,16 +44,17 @@ String spiffs_config_get(String name) {
     }
   }
 
-  return (String) NULL; // TODO something better than returning nulls
+  return (String)NULL; // TODO something better than returning nulls
 }
 
-void spiffs_config_set(String name, String value) {
+void spiffs_config_set(String name, String value)
+{
   Serial.println("Saving config");
   spiffs_config_begin_and_reformat_if_necessary();
 
   DynamicJsonBuffer jsonBuffer;
   JsonObject &json = jsonBuffer.createObject();
-  
+
   // TODO this will overwrite all file contents with just one value.  need to support read->modify->write instead
   json[name] = value;
 
@@ -66,6 +68,7 @@ void spiffs_config_set(String name, String value) {
   {
     Serial.print("JSON config file: ");
     json.printTo(Serial);
+    Serial.println();
     json.printTo(configFile);
     configFile.close();
   }

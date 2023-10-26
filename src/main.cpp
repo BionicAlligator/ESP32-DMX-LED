@@ -20,22 +20,26 @@ unsigned long lastUpdate = millis();
 // NOT OUR PROBLEM Configure Router and PC (SSID, Password, Physical Location)
 // DONE Create case (final assembly)
 // DONE MDNS
-// IN PROGRESS Web Interface
+// DONE Web Interface
 // DONE First Time Setup (Interactive WiFi Initialisation)
-// Web universe and channel config
-// Test with actual lights
-// Test during school assemblies (with full audience)
+// DONE Web universe config
+// DONE Test with actual lights
+// DONE Test during school assemblies (with full audience)
+// Web DNS name config
+
+// DONE Install 5V LED
+// Test transmit and receive of second device
+// Complete physical build of second device
+// Create and freeze Release 1 code version
 
 // Web debug console (display log messages)
-// Web DNS name config
-// Install 5V LED
 // Rename DMX files
 // Tidy code
 
 // Web Mode config (RX/TX)
 // Web LED strip control
 
-// second DMX port
+// Second DMX port
 // Document
 
 // TO REVIEW...

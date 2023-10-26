@@ -5,17 +5,17 @@
 const bool ARTNET_DMX_DEBUG = true;
 
 ArtnetWifi _artnet;
-int dmx_universe = 1;
+int dmx_port1_artnet_universe = 1;
 
 u_int8_t artnet_dmx_frames[ARTNET_MAX_UNIVERSES][ARTNET_MAX_CHANNELS_PER_UNIVERSE];
 
 // DMX: Univ: 0, Seq: 249, Data (512): 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ...
-void artnet_dmx_debug(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t *data)
+void artnet_dmx_debug(uint16_t artnet_universe, uint16_t length, uint8_t sequence, uint8_t *data)
 {
   bool tail = false;
 
-  Serial.print("artnet_read debug: universe:");
-  Serial.print(universe, DEC);
+  Serial.print("artnet_read debug: artnet_universe:");
+  Serial.print(artnet_universe, DEC);
   Serial.print(" sequence:");
   Serial.print(sequence, DEC);
   Serial.print(" length:");
@@ -40,15 +40,16 @@ void artnet_dmx_debug(uint16_t universe, uint16_t length, uint8_t sequence, uint
   Serial.println();
 }
 
-void _onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t *data)
+void _onDmxFrame(uint16_t artnet_universe, uint16_t length, uint8_t sequence, uint8_t *data)
 {
 
-  if (universe > 0 && universe < ARTNET_MAX_UNIVERSES)
+  if (artnet_universe >= 0 && artnet_universe < ARTNET_MAX_UNIVERSES)
   {
-    uint16_t channels = (length < ARTNET_MAX_CHANNELS_PER_UNIVERSE) ? length : ARTNET_MAX_CHANNELS_PER_UNIVERSE;
+    uint16_t channels = (length <= ARTNET_MAX_CHANNELS_PER_UNIVERSE) ? length : ARTNET_MAX_CHANNELS_PER_UNIVERSE;
+
     for (u_int16_t c = 0; c < channels; c++)
     {
-      artnet_dmx_frames[universe-1][c] = data[c];
+      artnet_dmx_frames[artnet_universe][c] = data[c];
     }
   }
   else
@@ -58,13 +59,13 @@ void _onDmxFrame(uint16_t universe, uint16_t length, uint8_t sequence, uint8_t *
   }
 
   if (ARTNET_DMX_DEBUG)
-    artnet_dmx_debug(universe, length, sequence, data);
+    artnet_dmx_debug(artnet_universe, length, sequence, data);
 }
 
 void artnet_setup()
 {
-  dmx_universe = atoi(spiffs_config_get("wifi_manager_universe").c_str());
-  Serial.printf("artnet_read: setting universe to %d\n", dmx_universe);
+  dmx_port1_artnet_universe = atoi(spiffs_config_get("wifi_manager_dmx_port1_artnet_universe").c_str());
+  Serial.printf("artnet_read: setting dmx_port1_artnet_universe to %d\n", dmx_port1_artnet_universe);
   _artnet.setArtDmxCallback(_onDmxFrame);
   _artnet.begin();
 }
@@ -78,10 +79,10 @@ int read_from_artnet(u_int8_t *data)
     data[0] = 0;
 
     uint16_t channels = (ARTNET_MAX_CHANNELS_PER_UNIVERSE < 512) ? ARTNET_MAX_CHANNELS_PER_UNIVERSE : 512;
-  
+
     for (u_int16_t c = 0; c < channels; c++)
     {
-      data[c + 1] = artnet_dmx_frames[dmx_universe-1][c];
+      data[c + 1] = artnet_dmx_frames[dmx_port1_artnet_universe][c];
     }
 
     return 1;
