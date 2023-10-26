@@ -8,8 +8,7 @@ void spiffs_config_begin_and_reformat_if_necessary()
   SPIFFS.begin(true);
 }
 
-String spiffs_config_get(String name)
-{
+JsonObject& spiffs_config_read() {
   Serial.println("mounting FS...");
   spiffs_config_begin_and_reformat_if_necessary();
 
@@ -35,41 +34,53 @@ String spiffs_config_get(String name)
       {
         Serial.println("\nparsed json");
 
-        return json[name];
+        return json;
       }
       else
       {
-        Serial.println("failed to load json config");
+        Serial.println("failed to load json config.  Using a new JSON object");
+        DynamicJsonBuffer jsonBuffer;
+        return jsonBuffer.createObject();
       }
     }
   }
+}
 
-  return (String)NULL; // TODO something better than returning nulls
+String spiffs_config_get(String name)
+{
+  JsonObject &json = spiffs_config_read();
+
+  if (&json==NULL) {
+      return (String)NULL; // TODO something better than returning nulls
+  } else {
+    return json[name];
+  }
+
 }
 
 void spiffs_config_set(String name, String value)
 {
   Serial.println("Saving config");
-  spiffs_config_begin_and_reformat_if_necessary();
 
-  DynamicJsonBuffer jsonBuffer;
-  JsonObject &json = jsonBuffer.createObject();
+  JsonObject &json = spiffs_config_read();
 
-  // TODO this will overwrite all file contents with just one value.  need to support read->modify->write instead
-  json[name] = value;
+  if (&json==NULL) {
+      return ;
+  } else {
+    json[name] = value;
+    File configFile = SPIFFS.open("/config.json", "w");
 
-  File configFile = SPIFFS.open("/config.json", "w");
-
-  if (!configFile)
-  {
-    Serial.println("Failed to open config file for writing");
-  }
-  else
-  {
-    Serial.print("JSON config file: ");
-    json.printTo(Serial);
-    Serial.println();
-    json.printTo(configFile);
-    configFile.close();
+    if (!configFile)
+    {
+      Serial.println("Failed to open config file for writing");
+    }
+    else
+    {
+      Serial.print("JSON config file: ");
+      json.printTo(Serial);
+      Serial.println();
+      json.printTo(configFile);
+      configFile.close();
+    }
   }
 }
