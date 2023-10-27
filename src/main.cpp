@@ -4,6 +4,7 @@
 #include <artnet_read.h>
 #include <web_interface.h>
 #include <wifi_manager.h>
+#include <WebLog.h>
 
 // Should we operate as a WiFi Art-Net node, reading Art-Net over WiFi and re-transmitting it as DMX?
 // If false, we will act as a DMX receiver
@@ -73,9 +74,7 @@ unsigned long lastUpdate = millis();
 
 void setup()
 {
-  /* Start the serial connection back to the computer so that we can log
-    messages to the Serial Monitor. Lets set the baud rate to 115200. */
-  Serial.begin(115200);
+  Log.setup();
 
   wifi_manager_setup();
 
@@ -87,7 +86,10 @@ void setup()
     led_strip_setup();
 
   web_interface_setup();
-  web_interface_append("Setup complete");
+
+  Log.println("Setup complete");
+  Log.print(27, HEX);
+  Log.println();
 }
 
 void loop()
@@ -110,7 +112,7 @@ void loop()
       if (millis() - lastUpdate > 100)
       {
         /* Print the received start code - it's usually 0. */
-        Serial.printf("Start code is 0x%02X and slot %02X is 0x%02X\n", dmx_data[0], myDMXAddress, dmx_data[myDMXAddress]);
+        Log.printf("Start code is 0x%02X and slot %02X is 0x%02X\n", dmx_data[0], myDMXAddress, dmx_data[myDMXAddress]);
         lastUpdate = millis();
       }
     }
@@ -125,7 +127,7 @@ void loop()
   if (LED_STRIP_CONTROL)
   {
     // if (dmx_data[myDMXAddress] >= 10 and dmx_data[myDMXAddress] <= 20) {
-    //   Serial.println("Running white along strip...");
+    //   Log.print("Running white along strip...");
     //   // delay(1600);
     //   run_animation();
     // }

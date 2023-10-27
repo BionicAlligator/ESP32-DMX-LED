@@ -1,7 +1,8 @@
 #include <artnet_read.h>
 #include <spiffs_config.h>
+#include <WebLog.h>
 
-// Set to true to print to serial console DMX frames
+// Set to true to print to log console DMX frames
 const bool ARTNET_DMX_DEBUG = true;
 
 ArtnetWifi _artnet;
@@ -14,13 +15,13 @@ void artnet_dmx_debug(uint16_t artnet_universe, uint16_t length, uint8_t sequenc
 {
   bool tail = false;
 
-  Serial.print("artnet_read debug: artnet_universe:");
-  Serial.print(artnet_universe, DEC);
-  Serial.print(" sequence:");
-  Serial.print(sequence, DEC);
-  Serial.print(" length:");
-  Serial.print(length, DEC);
-  Serial.print(" data:");
+  Log.print("artnet_read debug: artnet_universe:");
+  Log.print(artnet_universe, DEC);
+  Log.print(" sequence:");
+  Log.print(sequence, DEC);
+  Log.print(" length:");
+  Log.print(length, DEC);
+  Log.print(" data:");
 
   if (length > 32)
   {
@@ -30,14 +31,14 @@ void artnet_dmx_debug(uint16_t artnet_universe, uint16_t length, uint8_t sequenc
 
   for (int i = 0; i < length; i++)
   {
-    Serial.print(data[i], HEX);
-    Serial.print(" ");
+    Log.print(data[i], HEX);
+    Log.print(" ");
   }
   if (tail)
   {
-    Serial.print("...");
+    Log.print("...");
   }
-  Serial.println();
+  Log.println();
 }
 
 void _onDmxFrame(uint16_t artnet_universe, uint16_t length, uint8_t sequence, uint8_t *data)
@@ -65,7 +66,7 @@ void _onDmxFrame(uint16_t artnet_universe, uint16_t length, uint8_t sequence, ui
 void artnet_setup()
 {
   dmx_port1_artnet_universe = atoi(spiffs_config_get("wifi_manager_dmx_port1_artnet_universe").c_str());
-  Serial.printf("artnet_read: setting dmx_port1_artnet_universe to %d\n", dmx_port1_artnet_universe);
+  Log.printf("artnet_read: setting dmx_port1_artnet_universe to %d\n", dmx_port1_artnet_universe);
   _artnet.setArtDmxCallback(_onDmxFrame);
   _artnet.begin();
 }
