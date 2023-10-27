@@ -30,12 +30,17 @@ unsigned long lastUpdate = millis();
 
 // DONE Install 5V LED
 // DONE Test DMX transmit and receive with second device
-// Web debug console (display log messages)
+// DONE Web debug console (display log messages)
+// DONE Complete physical build of second device
+// DONE Unique WiFi AP name
 // Create and freeze Release 1 code version
-// Complete physical build of second device
+
+// Onboard LED control
 
 // Rename DMX files
 // Tidy code
+
+// Table of DMX values on web page
 
 // Fix orange wire on first device (used when receiving)
 // Test second device as a receiver

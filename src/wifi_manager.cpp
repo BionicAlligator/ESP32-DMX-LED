@@ -65,7 +65,9 @@ void wifi_manager_setup()
   // if it does not connect it starts an access point with the specified name
   Log.println("About to autoconnect...");
 
-  if (!wifi_manager.autoConnect("Art-Net WiFi"))
+  String ssid = "Art-Net WiFi " + WiFi.macAddress().substring(9);
+
+  if (!wifi_manager.autoConnect(ssid.c_str()))
   {
     Log.println("Failed after autoconnect and hit timeout");
     delay(3000);
