@@ -7,6 +7,8 @@
 #include <web_interface.h>
 #include <spiffs_config.h>
 
+#include <WebLog.h>
+
 DNSServer wifi_manager_dns;
 char wifi_manager_dmx_port1_artnet_universe[3];
 char wifi_manager_mdns_hostname[255];
@@ -19,19 +21,19 @@ bool shouldSaveConfig = false;
 // callback notifying us of the need to save config
 void saveConfigCallback()
 {
-  Serial.println("Should save config");
+  Log.println("Should save config");
   shouldSaveConfig = true;
 }
 
 void wifi_manager_web_reset(AsyncWebServerRequest *request)
 {
-  Serial.println("Resetting wifi manager settings");
+  Log.println("Resetting wifi manager settings");
   request->send(200, "text/plain", "Clearing WiFi and device config.  Search for \"Art-Net Wifi\" access point to perform first-time setup (may take around 30 seconds to appear).  CLOSE YOUR BROWSER NOW.");
   spiffs_config_clear();
   // Delay required to ensure HTTP response has time to get back to browser before we cut the WiFi connection.
   delay(1000);
   wifi_manager.resetSettings();
-  Serial.println("Wifi manager settings reset");
+  Log.println("Wifi manager settings reset");
   // Delay required to ensure WiFi settings are reset before rebooting the device.
   delay(1000);
   ESP.restart();
@@ -39,7 +41,7 @@ void wifi_manager_web_reset(AsyncWebServerRequest *request)
 
 void register_reset_page_with_web_server()
 {
-  Serial.println("Registering wifi manager reset at URL /reset");
+  Log.println("Registering wifi manager reset at URL /reset");
   server.on("/reset", HTTP_ANY, wifi_manager_web_reset);
 }
 
@@ -61,23 +63,23 @@ void wifi_manager_setup()
 
   // fetches ssid and password and tries to connect
   // if it does not connect it starts an access point with the specified name
-  Serial.println("About to autoconnect...");
+  Log.println("About to autoconnect...");
 
   if (!wifi_manager.autoConnect("Art-Net WiFi"))
   {
-    Serial.println("Failed after autoconnect and hit timeout");
+    Log.println("Failed after autoconnect and hit timeout");
     delay(3000);
     // reset and try again, or maybe put it to deep sleep
     ESP.restart();
     delay(5000);
   }
 
-  Serial.print("Done with autoconnect...  Universe Selected: ");
-  Serial.println(wifi_manager_param_dmx_port1_artnet_universe.getValue());
-  Serial.println();
-  Serial.print("MDNS Hostname:");
-  Serial.println(wifi_manager_param_mdns_hostname.getValue());
-  Serial.println();
+  Log.print("Done with autoconnect...  Universe Selected: ");
+  Log.println(wifi_manager_param_dmx_port1_artnet_universe.getValue());
+  Log.println();
+  Log.print("MDNS Hostname:");
+  Log.println(wifi_manager_param_mdns_hostname.getValue());
+  Log.println();
 
   // save the custom parameters to FS
   if (shouldSaveConfig)
