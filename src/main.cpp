@@ -81,6 +81,8 @@ void setup()
 {
   Log.setup();
 
+  // TODO: Slow blink LED = Starting Up
+
   wifi_manager_setup();
 
   artnet_setup();
@@ -124,10 +126,11 @@ void loop()
   }
 
   // Status LED Modes:
+  //   Factory Reset Mode
   //   No WiFi (doesn't apply in hardwired DMX mode)
   //   No Art-Net / No DMX (dependent on mode)
   //   No LED strip found
-  set_onboard_led_level(dmx_data[myDMXAddress]);
+  // set_onboard_led_level(dmx_data[myDMXAddress]);
 
   if (LED_STRIP_CONTROL)
   {

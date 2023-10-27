@@ -67,6 +67,8 @@ void wifi_manager_setup()
 
   String ssid = "Art-Net WiFi " + WiFi.macAddress().substring(9);
 
+  // TODO: Fast blink LED = WiFi not connected or first-time config (AP mode)
+
   if (!wifi_manager.autoConnect(ssid.c_str()))
   {
     Log.println("Failed after autoconnect and hit timeout");
@@ -75,6 +77,8 @@ void wifi_manager_setup()
     ESP.restart();
     delay(5000);
   }
+
+  // TODO: Turn off LED - we are on WiFi
 
   Log.print("Done with autoconnect...  Universe Selected: ");
   Log.println(wifi_manager_param_dmx_port1_artnet_universe.getValue());
