@@ -1,4 +1,4 @@
-#include <SPIFFS.h> //this needs to be first, or it all crashes and burns...
+#include <SPIFFS.h> // This needs to be first, or it all crashes and burns...
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
 #include <ESPAsyncWiFiManager.h>
@@ -9,16 +9,19 @@
 
 #include <WebLog.h>
 
+const int ARTNET_UNIVERSE_CHAR_LIMIT = 3;
+const int MDNS_HOSTNAME_CHAR_LIMIT = 255;
+
 DNSServer wifi_manager_dns;
-char wifi_manager_dmx_port1_artnet_universe[3];
-char wifi_manager_mdns_hostname[255];
+char wifi_manager_dmx_port1_artnet_universe[ARTNET_UNIVERSE_CHAR_LIMIT];
+char wifi_manager_mdns_hostname[MDNS_HOSTNAME_CHAR_LIMIT];
 
 AsyncWiFiManager wifi_manager(&server, &wifi_manager_dns);
 
-// flag for saving data
+// Flag for saving data
 bool shouldSaveConfig = false;
 
-// callback notifying us of the need to save config
+// Callback notifying us of the need to save config
 void saveConfigCallback()
 {
   Log.println("Should save config");
@@ -52,17 +55,18 @@ void spiffs_begin_reformatting_if_necessary()
 
 void wifi_manager_setup()
 {
-  // read configuration from FS json and store in wifi_manager_universe
-  spiffs_config_get("wifi_manager_dmx_port1_artnet_universe").toCharArray(wifi_manager_dmx_port1_artnet_universe, 3);
+  // Read configuration from JSON file on filesystem
+  spiffs_config_get("wifi_manager_dmx_port1_artnet_universe").toCharArray(wifi_manager_dmx_port1_artnet_universe, ARTNET_UNIVERSE_CHAR_LIMIT);
+  spiffs_config_get("wifi_manager_mdns_hostname").toCharArray(wifi_manager_mdns_hostname, MDNS_HOSTNAME_CHAR_LIMIT);
 
-  AsyncWiFiManagerParameter wifi_manager_param_dmx_port1_artnet_universe("universe", "DMX Port 1 Art-Net Universe", wifi_manager_dmx_port1_artnet_universe, 2);
-  AsyncWiFiManagerParameter wifi_manager_param_mdns_hostname("mdns_hostname", "MDNS Hostname", wifi_manager_mdns_hostname, 255);
+  AsyncWiFiManagerParameter wifi_manager_param_dmx_port1_artnet_universe("universe", "DMX Port 1 Art-Net Universe", wifi_manager_dmx_port1_artnet_universe, ARTNET_UNIVERSE_CHAR_LIMIT);
+  AsyncWiFiManagerParameter wifi_manager_param_mdns_hostname("mdns_hostname", "Node Name", wifi_manager_mdns_hostname, MDNS_HOSTNAME_CHAR_LIMIT);
   wifi_manager.setSaveConfigCallback(saveConfigCallback);
   wifi_manager.addParameter(&wifi_manager_param_dmx_port1_artnet_universe);
   wifi_manager.addParameter(&wifi_manager_param_mdns_hostname);
 
-  // fetches ssid and password and tries to connect
-  // if it does not connect it starts an access point with the specified name
+  // Fetches SSID and password and tries to connect
+  // If it fails to connect, it starts an access point with the specified SSID
   Log.println("About to autoconnect...");
 
   String ssid = "Art-Net WiFi " + WiFi.macAddress().substring(9);
@@ -73,7 +77,7 @@ void wifi_manager_setup()
   {
     Log.println("Failed after autoconnect and hit timeout");
     delay(3000);
-    // reset and try again, or maybe put it to deep sleep
+    // Reset and try again, or maybe put it to deep sleep
     ESP.restart();
     delay(5000);
   }
@@ -87,7 +91,7 @@ void wifi_manager_setup()
   Log.println(wifi_manager_param_mdns_hostname.getValue());
   Log.println();
 
-  // save the custom parameters to FS
+  // Save the custom parameters to filesystem
   if (shouldSaveConfig)
   {
     spiffs_config_set("wifi_manager_dmx_port1_artnet_universe", wifi_manager_param_dmx_port1_artnet_universe.getValue());

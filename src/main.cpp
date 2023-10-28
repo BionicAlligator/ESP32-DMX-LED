@@ -35,6 +35,9 @@ unsigned long lastUpdate = millis();
 // DONE Unique WiFi AP name
 // Create and freeze Release 1 code version
 
+// Track down bug where sometimes the custom parameters entered on captive portal are not saved/applied (in this instance, node comes up on artnet.local)
+// Add /universe/<new-artnet-universe> web endpoint to enable universe switching without needing a full reset
+// Add /name/<new-node-name> web endpoint to enable node name (MDNS hostname) to be changed without needing a full reset
 // Onboard LED control
 
 // Rename DMX files
