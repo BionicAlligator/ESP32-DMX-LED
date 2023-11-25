@@ -7,8 +7,9 @@ const bool ARTNET_DMX_DEBUG = true;
 
 ArtnetWifi _artnet;
 int dmx_port1_artnet_universe = 1;
+volatile bool new_artnet_frame_matching_configured_universe = false;
 
-u_int8_t artnet_dmx_frames[ARTNET_MAX_UNIVERSES][ARTNET_MAX_CHANNELS_PER_UNIVERSE];
+u_int8_t artnet_dmx_frame[ARTNET_MAX_CHANNELS_PER_UNIVERSE];
 
 // DMX: Univ: 0, Seq: 249, Data (512): 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ...
 void artnet_dmx_debug(uint16_t artnet_universe, uint16_t length, uint8_t sequence, uint8_t *data)
@@ -44,14 +45,15 @@ void artnet_dmx_debug(uint16_t artnet_universe, uint16_t length, uint8_t sequenc
 void _onDmxFrame(uint16_t artnet_universe, uint16_t length, uint8_t sequence, uint8_t *data)
 {
 
-  if (artnet_universe >= 0 && artnet_universe < ARTNET_MAX_UNIVERSES)
+  if (artnet_universe == dmx_port1_artnet_universe)
   {
     uint16_t channels = (length <= ARTNET_MAX_CHANNELS_PER_UNIVERSE) ? length : ARTNET_MAX_CHANNELS_PER_UNIVERSE;
 
     for (u_int16_t c = 0; c < channels; c++)
     {
-      artnet_dmx_frames[artnet_universe][c] = data[c];
+      artnet_dmx_frame[c] = data[c];
     }
+    new_artnet_frame_matching_configured_universe = true;
   }
   else
   {
@@ -76,18 +78,27 @@ int read_from_artnet(u_int8_t *data)
   /* read() returns 0 if there are no new DMX frames.  If there are new frames, it calls our _onDmxFrame() callback but only once per read()*/
   if (_artnet.read() == ART_DMX)
   {
-    /* Add in DMX Start Code because the data passed from Art-Net doesn't include it*/
-    data[0] = 0;
-
-    uint16_t channels = (ARTNET_MAX_CHANNELS_PER_UNIVERSE < 512) ? ARTNET_MAX_CHANNELS_PER_UNIVERSE : 512;
-
-    for (u_int16_t c = 0; c < channels; c++)
+    if (new_artnet_frame_matching_configured_universe)
     {
-      data[c + 1] = artnet_dmx_frames[dmx_port1_artnet_universe][c];
+      /* Add in DMX Start Code because the data passed from Art-Net doesn't include it*/
+      data[0] = 0;
+
+      uint16_t channels = (ARTNET_MAX_CHANNELS_PER_UNIVERSE < 512) ? ARTNET_MAX_CHANNELS_PER_UNIVERSE : 512;
+
+      for (u_int16_t c = 0; c < channels; c++)
+      {
+        data[c + 1] = artnet_dmx_frame[c];
+      }
+      new_artnet_frame_matching_configured_universe = false;
+      return 1;
+    } 
+    else
+    {
+      return 0;
     }
-
-    return 1;
   }
-
-  return 0;
+  else 
+  {
+    return 0;
+  }
 }
