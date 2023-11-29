@@ -10,6 +10,8 @@
 // If false, we will act as a DMX receiver
 const bool ARTNET_NODE = true;
 const bool LED_STRIP_CONTROL = false;
+const int MIN_DMX_REFRESH_RATE = 10;                       // Hz
+const int MAX_UPDATE_PERIOD = 1000 / MIN_DMX_REFRESH_RATE; // milliseconds
 
 u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
@@ -108,8 +110,11 @@ void loop()
 
   if (ARTNET_NODE)
   {
-    if (read_from_artnet(dmx_data))
+    if (read_from_artnet(dmx_data) || (millis() - lastUpdate > MAX_UPDATE_PERIOD))
+    {
       write_to_dmx(dmx_data);
+      lastUpdate = millis();
+    }
   }
   else
   {
