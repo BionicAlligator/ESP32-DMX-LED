@@ -16,6 +16,19 @@ const int MAX_UPDATE_PERIOD = 1000 / MIN_DMX_REFRESH_RATE; // milliseconds
 u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
 
+/*
+
+JEFF's TODO before battle of the bands
+
+webpage
+For status:
+- IP address
+- Configuration parameters
+- dynamic updates on webpage? observables? reactjs?
+For cobnfiguration:
+- No reboots, click and update configuration parameters
+
+*/
 /* =-=-=-= BACKLOG OF WORK =-=-=-= */
 
 // Sprint Goal: know we are ready to run the show (box created and tested with real lights, ideally with audience)
