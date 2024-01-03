@@ -9,6 +9,7 @@
 #include <web_interface.h>
 #include <spiffs_config.h>
 #include <WebLog.h>
+#include <SPIFFS.h>
 
 WiFiUDP udp;
 MDNS mdns(udp);
@@ -52,7 +53,10 @@ void web_interface_setup()
   }
 
   server.on("/", HTTP_GET, web_request_root);
-
+  // Serve files in directory "/www/" when request url starts with "/"
+  // Request to the root or none existing files will try to server the defualt
+  // file name "index.htm" if exists
+  server.serveStatic("/", SPIFFS, "/www/");
   server.onNotFound(web_request_not_found);
 
   server.begin();
