@@ -14,15 +14,27 @@
 WiFiUDP udp;
 MDNS mdns(udp);
 
-
 AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
+
+void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
+{
+  if (type == WS_EVT_CONNECT)
+  {
+    Serial.println("Websocket client connection received");
+    client->text("{\"millis\":123}");
+  }
+  else if (type == WS_EVT_DISCONNECT)
+  {
+    Serial.println("Client disconnected");
+  }
+}
 
 /* Must call this on main loop */
 void web_interface_loop()
 {
   mdns.run();
 }
-
 
 void web_request_not_found(AsyncWebServerRequest *request)
 {
@@ -33,7 +45,7 @@ void web_request_root(AsyncWebServerRequest *request)
 {
   String s;
   Log.write_log_to(s);
-  request->send(200, "text/plain", s); 
+  request->send(200, "text/plain", s);
 }
 
 void web_interface_setup()
@@ -58,6 +70,9 @@ void web_interface_setup()
   // file name "index.htm" if exists
   server.serveStatic("/", SPIFFS, "/www/");
   server.onNotFound(web_request_not_found);
+
+  ws.onEvent(onWsEvent);
+  server.addHandler(&ws);
 
   server.begin();
 }

@@ -55,17 +55,17 @@ void dmx_setup()
 // DMX: Data (513): 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ...
 void display_dmx(uint8_t *data)
 {
-  Log.print("DMX: SC: ");
-  Log.print(data[0], HEX);
+  // Log.print("DMX: SC: ");
+  // Log.print(data[0], HEX);
 
-  Log.print(" Data: ");
-  for (int i = 1; i <= 32; i++)
-  {
-    Log.print(data[i], HEX);
-    Log.print(" ");
-  }
+  // Log.print(" Data: ");
+  // for (int i = 1; i <= 32; i++)
+  // {
+  //   Log.print(data[i], HEX);
+  //   Log.print(" ");
+  // }
 
-  Log.println("...");
+  // Log.println("...");
 }
 
 int write_to_dmx(u_int8_t *data)
