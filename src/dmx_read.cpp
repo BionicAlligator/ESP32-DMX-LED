@@ -70,7 +70,7 @@ void display_dmx(uint8_t *data)
 
 int write_to_dmx(u_int8_t *data)
 {
-  Log.print("Sending ");
+  // Log.print("Sending ");
   display_dmx(data);
 
   // TODO: Handle error scenarios when sending DMX

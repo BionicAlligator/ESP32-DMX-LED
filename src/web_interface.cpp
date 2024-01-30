@@ -17,23 +17,40 @@ MDNS mdns(udp);
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
+AsyncWebSocketClient *myClient;
+
 void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
 {
   if (type == WS_EVT_CONNECT)
   {
     Serial.println("Websocket client connection received");
     client->text("{\"millis\":123}");
+
+    myClient = client;
   }
   else if (type == WS_EVT_DISCONNECT)
   {
     Serial.println("Client disconnected");
+    myClient = NULL;
   }
 }
+
+long webLastUpdate = millis();
 
 /* Must call this on main loop */
 void web_interface_loop()
 {
   mdns.run();
+
+  if ((millis() - webLastUpdate > 1000) && (myClient != NULL))
+  {
+    Serial.println("Updating Websocket value");
+    myClient->text("{\"millis\":" + String(millis()) + "}");
+
+    webLastUpdate = millis();
+  }
+
+  ws.cleanupClients();
 }
 
 void web_request_not_found(AsyncWebServerRequest *request)
