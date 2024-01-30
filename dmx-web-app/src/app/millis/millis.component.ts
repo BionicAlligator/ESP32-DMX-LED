@@ -10,16 +10,14 @@ import { webSocket } from 'rxjs/webSocket';
 })
 
 export class MillisComponent {
-  millis = 456;
+  millis$ = new BehaviorSubject(456);
 
   onMsg(msg: any) {
     console.log('message received: ' + msg.millis) // Called whenever there is a message from the server.
-    this.millis = msg.millis;
+    this.millis$.next(msg.millis);
   }
 
   ngOnInit() {
-    this.millis = 4646;
-
     const subject = webSocket('ws://artnet.local:80/ws');
 
     subject.subscribe({
