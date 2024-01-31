@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
 export class MillisComponent {
   millis$ = new BehaviorSubject(678);
 
-  public onMsg(msg: any) {
+  onMsg(msg: any) {
     console.log('message received: ' + msg.millis); // Called whenever there is a message from the server.
     this.millis$.next(msg.millis);
   }
