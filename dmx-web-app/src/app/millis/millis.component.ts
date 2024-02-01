@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './millis.component.html',
-  styleUrl: './millis.component.css'
 })
 
 export class MillisComponent {
@@ -20,7 +19,8 @@ export class MillisComponent {
   }
 
   ngOnInit() {
-    const subject = webSocket('ws://192.168.1.115:80/ws');
+    // TODO: 
+    const subject = webSocket('ws://artnet.local:80/ws');
 
     subject.subscribe({
       next: msg => this.onMsg(msg),
