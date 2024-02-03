@@ -1,3 +1,4 @@
 .pio
 .vscode
 src/local_wifi_password.h
+data/www
