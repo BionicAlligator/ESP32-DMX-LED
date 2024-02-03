@@ -19,8 +19,9 @@ export class MillisComponent {
   }
 
   ngOnInit() {
-    // TODO: 
-    const subject = webSocket('ws://artnet.local:80/ws');
+    // TODO: read node name from config
+    // https://github.com/me-no-dev/ESPAsyncWebServer?tab=readme-ov-file#template-processing
+    const subject = webSocket('ws:///ws');
 
     subject.subscribe({
       next: msg => this.onMsg(msg),

@@ -31,6 +31,10 @@ For cobnfiguration:
 */
 /* =-=-=-= BACKLOG OF WORK =-=-=-= */
 
+// WEB INTERFACE TODOs
+// Get ng deploy to push built app to data/www staging area
+// Eliminate risk of someone injecting code within the hostname (or other config parameters) that they set from the captive portal
+
 // Sprint Goal: know we are ready to run the show (box created and tested with real lights, ideally with audience)
 // DONE Tidy up code
 // NOT OUR PROBLEM Configure Router and PC (SSID, Password, Physical Location)
