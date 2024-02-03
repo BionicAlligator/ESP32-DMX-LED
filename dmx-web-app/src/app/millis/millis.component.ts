@@ -19,9 +19,7 @@ export class MillisComponent {
   }
 
   ngOnInit() {
-    // TODO: read node name from config
-    // https://github.com/me-no-dev/ESPAsyncWebServer?tab=readme-ov-file#template-processing
-    const subject = webSocket('ws:///ws');
+    const subject = webSocket("ws://" + window.location.host + "/ws");
 
     subject.subscribe({
       next: msg => this.onMsg(msg),
