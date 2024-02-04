@@ -2,6 +2,8 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <AsyncWebSocket.h>
+#include <StringArray.h>
 
 #include <WiFiUdp.h>
 #include <ArduinoMDNS.h>
@@ -17,37 +19,40 @@ MDNS mdns(udp);
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
-AsyncWebSocketClient *myClient;
+void send_websocket_update(AsyncWebSocketClient *client)
+{
+  client->text("{\"millis\":" + String(millis()) + "}");
+  Serial.printf("Sending update to websocket client %x\n", client);
+}
 
 void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
 {
   if (type == WS_EVT_CONNECT)
   {
     Serial.println("Websocket client connection received");
-    client->text("{\"millis\":123}");
-
-    myClient = client;
+    send_websocket_update(client);
   }
   else if (type == WS_EVT_DISCONNECT)
   {
     Serial.println("Client disconnected");
-    myClient = NULL;
   }
 }
 
-long webLastUpdate = millis();
+long web_interface_last_update_attempt_millis = millis();
 
 /* Must call this on main loop */
 void web_interface_loop()
 {
   mdns.run();
 
-  if ((millis() - webLastUpdate > 1000) && (myClient != NULL))
+  if (millis() - web_interface_last_update_attempt_millis > 1000)
   {
-    Serial.println("Updating Websocket value");
-    myClient->text("{\"millis\":" + String(millis()) + "}");
-
-    webLastUpdate = millis();
+    auto clients = ws.getClients();
+    for(auto client = clients.begin(); client != clients.end(); ++client)
+    {
+      send_websocket_update(*client);
+    }
+    web_interface_last_update_attempt_millis = millis();
   }
 
   ws.cleanupClients();
