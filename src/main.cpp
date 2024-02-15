@@ -32,6 +32,17 @@ For cobnfiguration:
 /* =-=-=-= BACKLOG OF WORK =-=-=-= */
 
 // WEB INTERFACE TODOs
+
+
+// Move to a single dymaically updated model that drives all components (i.e. remove websocketsubscription from individiual component)
+/*
+that is, extend two way binding into our web socket message json
+
+this.millis = model$.get("status/millis");
+
+model.put("status/state", "reset");
+*/
+
 // Get ng deploy to push built app to data/www staging area
 // Eliminate risk of someone injecting code within the hostname (or other config parameters) that they set from the captive portal
 

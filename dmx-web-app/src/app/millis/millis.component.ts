@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { webSocket } from 'rxjs/webSocket';
 import { BehaviorSubject } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { WebSocketService, WebSocketSubscriber } from '../websocket.service';
 
 @Component({
   selector: 'app-millis',
@@ -10,22 +10,16 @@ import { CommonModule } from '@angular/common';
   templateUrl: './millis.component.html',
 })
 
-export class MillisComponent {
+export class MillisComponent implements WebSocketSubscriber{
   millis$ = new BehaviorSubject(678);
+  constructor(private webSocketService: WebSocketService) {}
 
   onMsg(msg: any) {
-    console.log('message received: ' + msg.millis); // Called whenever there is a message from the server.
-    this.millis$.next(msg.millis);
+    console.log('message received: ' + JSON.stringify(msg.status.uptime_millis)); // Called whenever there is a message from the server.
+    this.millis$.next(msg.status.uptime_millis);
   }
 
   ngOnInit() {
-    const subject = webSocket("ws://" + window.location.host + "/ws");
-
-    subject.subscribe({
-      next: msg => this.onMsg(msg),
-      error: err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
-      complete: () => console.log('complete') // Called when connection is closed (for whatever reason).
-    });
-
+    this.webSocketService.subscribe(this);
   }
 }

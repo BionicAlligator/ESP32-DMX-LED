@@ -13,6 +13,8 @@
 #include <WebLog.h>
 #include <SPIFFS.h>
 
+#include <ArduinoJson.h>
+
 WiFiUDP udp;
 MDNS mdns(udp);
 
@@ -36,6 +38,17 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
   else if (type == WS_EVT_DISCONNECT)
   {
     Serial.println("Client disconnected");
+  }
+  else if (type == WS_EVT_DATA) 
+  {
+    String s = String(data, len);
+    Serial.println(s);
+
+    DynamicJsonBuffer jsonBuffer;
+    JsonObject &json = jsonBuffer.parseObject(s);
+
+    const char* state = json["status"]["state"];
+    Serial.println(state);
   }
 }
 
