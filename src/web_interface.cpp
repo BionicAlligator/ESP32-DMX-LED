@@ -21,7 +21,8 @@ AsyncWebSocket ws("/ws");
 
 void send_websocket_update(AsyncWebSocketClient *client)
 {
-  client->text("{\"millis\":" + String(millis()) + "}");
+  // { "status": { "uptime_millis":1234 } }
+  client->text("{ \"status\": { \"uptime_millis\":" + String(millis()) + " } }");
   Serial.printf("Sending update to websocket client %x\n", client);
 }
 
