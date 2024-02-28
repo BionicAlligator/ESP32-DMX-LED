@@ -11,4 +11,9 @@ import { FactoryResetComponent } from './factory-reset/factory-reset.component';
 
 export class AppComponent {
   title = 'dmx-web-app';
+  model = {
+    "status": {
+      "uptime_millis":5678
+    }
+  };
 }
