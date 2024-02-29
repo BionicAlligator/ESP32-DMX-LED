@@ -1,4 +1,4 @@
 <h1>Hello, {{ title }}</h1>
 <p>Congratulations! Your app is running. 🎉</p>
-<app-millis [(model)]="model">System uptime unavailable</app-millis>
-<app-factory-reset>Factory reset unavailable</app-factory-reset>
+<app-millis [dmxNodeModel]="modelChange$ | async">System uptime unavailable</app-millis>
+<app-factory-reset [dmxNodeModel2]="modelChange$ | async">Factory reset unavailable</app-factory-reset>

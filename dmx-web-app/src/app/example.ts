@@ -1,9 +1,16 @@
-export interface MillisModel {
-    
+
+
+/*
+- Define formal schema in an javascript interface for the model
+- Switch from WebSocketService to ModelSynchroniser
+- Switch back to "| async"
+*/
+
+
+export interface DmxNodeModel {
         "status": {
           "uptime_millis":number
         }
-    
 }
 
 
@@ -11,15 +18,18 @@ export interface MillisModel {
 @Injectable({
     providedIn: 'root'
 })
-export class MillisService implements WebSocketSubscriber {
-    millis$ = new BehaviorSubject<MillisModel>();
+export class ModelSynchroniser implements WebSocketSubscriber {
+  // sends and receives web socket messages when needed, based on model changes
+
+    model$ = new BehaviorSubject<DmxNodeModel>();
     // millis_http$ = this.httpClient.get('/millis').pipe(shareReplay(1)) // How to avoid multiple HTTP requests if you are using a REST pattern instead of websockets
 
     constructor(private webSocketService: WebSocketService) { }
 
     onMsg(msg: any) {
-        console.log('message received: ' + JSON.stringify(msg.status.uptime_millis)); // Called whenever there is a message from the server.
-        this.millis$.next(msg)
+        console.log('asdfasdfmessage received: ' + JSON.stringify(msg)); // Called whenever there is a message from the server.
+        // is msg the whole model?  problably not, but we assume so for now
+        this.model$.next(msg)
     }
 
     ngOnInit() {
@@ -44,15 +54,17 @@ import { WebSocketService, WebSocketSubscriber } from '../websocket.service';
   imports: [CommonModule],
   template: `
     <p>millis is {{ model.status.uptime_millis }}</p>
-    <button (click)="reset.emit()">Reset</button>
+    <button (click)="onClick();">Reset</button>
   `
 })
 
 export class MillisComponent {
     @Input() model: MillisModel;
-    @Output() reset = new EventEmitter<void>();
+    @Output() modelChange = new EventEmitter<MillisModel>();
 
-  
+    onClick() {
+      modelChange.emit();
+    }
 }
 
 

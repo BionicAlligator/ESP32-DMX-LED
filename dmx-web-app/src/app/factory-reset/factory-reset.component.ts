@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { WebSocketService } from '../websocket.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { DmxNodeModel } from '../dmx-node-model';
 
 @Component({
   selector: 'app-factory-reset',
@@ -8,10 +8,10 @@ import { WebSocketService } from '../websocket.service';
   templateUrl: './factory-reset.component.html'
 })
 export class FactoryResetComponent {
-
-  constructor(private webSocketService: WebSocketService) {}
+  @Input() dmxNodeModel2: any;
 
   onClick() {
-    this.webSocketService.send();
+    console.log("clicked");
+    this.dmxNodeModel2.status.state="reset";
   }
 }
