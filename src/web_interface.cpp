@@ -39,7 +39,7 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
   {
     Serial.println("Client disconnected");
   }
-  else if (type == WS_EVT_DATA) 
+  else if (type == WS_EVT_DATA)
   {
     String s = String(data, len);
     Serial.println(s);
@@ -47,8 +47,12 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
     DynamicJsonBuffer jsonBuffer;
     JsonObject &json = jsonBuffer.parseObject(s);
 
-    const char* state = json["status"]["state"];
-    Serial.println(state);
+    // TODO: Need to re-write this.  Currently causes panic if JSON does not contain both state and dmx_universe
+    // const char *state = json["status"]["state"];
+    // Serial.printf("State: %s\n", state);
+
+    const char *dmx_universe = json["config"]["dmx_universe"];
+    Serial.printf("DMX Universe: %s\n", dmx_universe);
   }
 }
 
@@ -62,7 +66,7 @@ void web_interface_loop()
   if (millis() - web_interface_last_update_attempt_millis > 1000)
   {
     auto clients = ws.getClients();
-    for(auto client = clients.begin(); client != clients.end(); ++client)
+    for (auto client = clients.begin(); client != clients.end(); ++client)
     {
       send_websocket_update(*client);
     }

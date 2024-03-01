@@ -13,8 +13,11 @@ export class ModelSynchroniser {
 
   // millis_http$ = this.httpClient.get('/millis').pipe(shareReplay(1)) // How to avoid multiple HTTP requests if you are using a REST pattern instead of websockets
   webSocket$: WebSocketSubject<any>;
+
   constructor() {
     fixWebSocketError();
+
+    //TODO: Need to connect to the correct URL - the device may not be called "artnet.local"
     this.webSocket$ = webSocket("ws://artnet.local/ws");
 
     console.log("subscribe");

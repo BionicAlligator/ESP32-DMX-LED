@@ -3,4 +3,5 @@
 <ng-container *ngIf="modelChangesFromServer$ | async as model">
   <app-millis [dmxNodeModel]="model">System uptime unavailable</app-millis>
   <app-factory-reset>Factory reset unavailable</app-factory-reset>
+  <app-dmx-universe [dmxNodeModel]="model">System uptime unavailable</app-dmx-universe>
 </ng-container>

@@ -17,7 +17,6 @@ u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
 
 /*
-
 JEFF's TODO before battle of the bands
 
 webpage
@@ -25,7 +24,7 @@ For status:
 - IP address
 - Configuration parameters
 - dynamic updates on webpage? observables? reactjs?
-For cobnfiguration:
+For configuration:
 - No reboots, click and update configuration parameters
 
 */
@@ -33,8 +32,7 @@ For cobnfiguration:
 
 // WEB INTERFACE TODOs
 
-
-// Move to a single dymaically updated model that drives all components (i.e. remove websocketsubscription from individiual component)
+// Move to a single dynamically updated model that drives all components (i.e. remove websocketsubscription from individual component)
 /*
 that is, extend two way binding into our web socket message json
 
@@ -63,7 +61,7 @@ model.put("status/state", "reset");
 // DONE Web debug console (display log messages)
 // DONE Complete physical build of second device
 // DONE Unique WiFi AP name
-// Create and freeze Release 1 code version
+// DONE Create and freeze Release 1 code version
 
 // Track down bug where sometimes the custom parameters entered on captive portal are not saved/applied (in this instance, node comes up on artnet.local)
 // Add /universe/<new-artnet-universe> web endpoint to enable universe switching without needing a full reset
