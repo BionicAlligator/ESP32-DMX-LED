@@ -1,4 +1,6 @@
 <h1>Hello, {{ title }}</h1>
 <p>Congratulations! Your app is running. 🎉</p>
-<app-millis [dmxNodeModel]="modelChange$ | async">System uptime unavailable</app-millis>
-<app-factory-reset [dmxNodeModel2]="modelChange$ | async">Factory reset unavailable</app-factory-reset>
+<ng-container *ngIf="modelChange$ | async as model">
+  <app-millis [dmxNodeModel]="model">System uptime unavailable</app-millis>
+  <app-factory-reset [dmxNodeModel2]="model">Factory reset unavailable</app-factory-reset>
+</ng-container>
