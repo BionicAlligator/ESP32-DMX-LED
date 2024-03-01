@@ -8,6 +8,7 @@ import { DmxNodeModel } from '../dmx-node-model';
   templateUrl: './factory-reset.component.html'
 })
 export class FactoryResetComponent {
+  //Inject model synchroniser.  Call send() when button is clicked.
   @Input() dmxNodeModel2: any;
 
   onClick() {
