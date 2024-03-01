@@ -10,7 +10,7 @@ export class ModelSynchroniser {
 // sends and receives web socket messages when needed, based on model changes
 // TODO insure angular dependency injection is using this class as
 
-  modelChange$ = new BehaviorSubject<DmxNodeModel>({status: {uptime_millis:1234}});
+  modelChange$ = new BehaviorSubject<DmxNodeModel>({status: {uptime_millis:1234}});  //Potentially use ReplaySubject instead
 
   // millis_http$ = this.httpClient.get('/millis').pipe(shareReplay(1)) // How to avoid multiple HTTP requests if you are using a REST pattern instead of websockets
   webSocket$: WebSocketSubject<any>;
