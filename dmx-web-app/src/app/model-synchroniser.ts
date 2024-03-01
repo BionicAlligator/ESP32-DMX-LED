@@ -7,10 +7,9 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root'
 })
 export class ModelSynchroniser {
-// sends and receives web socket messages when needed, based on model changes
-// TODO insure angular dependency injection is using this class as
+  // sends and receives web socket messages when needed, based on model changes
 
-  modelChange$ = new BehaviorSubject<DmxNodeModel>({status: {uptime_millis:1234}});  //Potentially use ReplaySubject instead
+  modelChangesFromServer$ = new BehaviorSubject<DmxNodeModel>({ status: { uptime_millis: 1234 } });  //Potentially use ReplaySubject instead
 
   // millis_http$ = this.httpClient.get('/millis').pipe(shareReplay(1)) // How to avoid multiple HTTP requests if you are using a REST pattern instead of websockets
   webSocket$: WebSocketSubject<any>;
@@ -22,20 +21,19 @@ export class ModelSynchroniser {
     this.webSocket$.subscribe({
       next: msg => this.onMsg(msg),
       error: err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
-      complete: () => console.log('complete') // Called when connection is closed (for whatever reason).
+      complete: () => console.log('Model Synchroniser Subscription to webSocket$ complete') // Called when connection is closed (for whatever reason).
     });
   }
 
   onMsg(msg: any) {
-      console.log('is this client or server? message received: ' + JSON.stringify(msg)); // Called whenever there is a message from the server.
-      // is msg the whole model?  problably not, but we assume so for now
-      this.modelChange$.next(msg)
+    console.log('Message Received: ' + JSON.stringify(msg)); // Called whenever there is a message from the server.
+    // is msg the whole model?  probably not, but we assume so for now
+    this.modelChangesFromServer$.next(msg)
   }
 
-  // TODO subscribe to modelChange$ and send updates to the websocket
-  send() {
-    console.log("reset");
-    this.webSocket$.next({status:{state: "reset"}});
+  send(modelChange: any) {
+    console.log("Model Changed: " + JSON.stringify(modelChange));
+    this.webSocket$.next(modelChange);
   }
 }
 

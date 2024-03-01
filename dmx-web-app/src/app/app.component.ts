@@ -13,6 +13,7 @@ import { ModelSynchroniser } from './model-synchroniser';
 
 export class AppComponent {
   title = 'dmx-web-app';
-  modelChange$ = this.modelSynchroniser.modelChange$;
-  constructor(private modelSynchroniser: ModelSynchroniser) {}
+  modelChangesFromServer$ = this.modelSynchroniser.modelChangesFromServer$;
+
+  constructor(private modelSynchroniser: ModelSynchroniser) { }
 }

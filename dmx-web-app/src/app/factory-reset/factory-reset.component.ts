@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { DmxNodeModel } from '../dmx-node-model';
+import { Component } from '@angular/core';
+import { ModelSynchroniser } from '../model-synchroniser';
 
 @Component({
   selector: 'app-factory-reset',
@@ -8,11 +8,10 @@ import { DmxNodeModel } from '../dmx-node-model';
   templateUrl: './factory-reset.component.html'
 })
 export class FactoryResetComponent {
-  //Inject model synchroniser.  Call send() when button is clicked.
-  @Input() dmxNodeModel2: any;
+  constructor(private modelChangesFromClient: ModelSynchroniser) { }
 
   onClick() {
-    console.log("clicked");
-    this.dmxNodeModel2.status.state="reset";
+    console.log("Reset clicked");
+    this.modelChangesFromClient.send({ status: { state: "reset" } });
   }
 }

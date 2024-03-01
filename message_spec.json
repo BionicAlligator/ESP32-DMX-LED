@@ -1,34 +1,65 @@
 // full message from device to browser, sent upon browser websocket connect
 {
   "status": {
-    "uptime_millis":1234,
+    "uptime_millis": 1234,
     "wifi_signal_strength_dbm": -79.2,
     "state": "running"
   },
   "config": {
     "mac_address": "AA:AB:AC:AD:AE:AF",
     "mdns_hostname": "artnet.local",
-    "wifi_ssid":"blah",
+    "wifi_ssid": "blah",
     "max_update_frequency_millis": 1000,
     "min_update_frequency_millis": 60000,
     "dmx_universe": 0
   },
-  "dmx_data":[1,2,3,4,5,6,7]
+  "dmx_data": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ]
 }
-
 // partial update message from device, containing just system uptime
 {
   "status": {
-    "uptime_millis":1234
+    "uptime_millis": 1234
   }
 }
 // { "status": { "uptime_millis":1234 } }
-
 // command from browser to reset device
 {
-  "status":{
+  "status": {
     "state": "reset"
   }
 }
-
 //{"status":{"state": "reset"}}
+//
+//
+//
+//Command message client->server
+{
+  "config": {
+    "mdns_hostname": "artnet.local",
+    "dmx_universe": 0
+  }
+}
+//Server makes changes and sends a new model update message server->client
+{
+  "config": {
+    "mdns_hostname": "artnet.local",
+    "dmx_universe": 0
+  },
+  "dmx_data": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ]
+}
