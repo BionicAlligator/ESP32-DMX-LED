@@ -30,22 +30,20 @@
   }
 }
 // { "status": { "uptime_millis":1234 } }
+//
+//
+//
 // command from browser to reset device
 {
-  "status": {
-    "state": "reset"
-  }
+  "status_state": "reset"
 }
-//{"status":{"state": "reset"}}
 //
 //
 //
 //Command message client->server
 {
-  "config": {
-    "mdns_hostname": "artnet.local",
-    "dmx_universe": 0
-  }
+  "config_mdns_hostname": "artnet.local",
+  "config_dmx_universe": 0
 }
 //Server makes changes and sends a new model update message server->client
 {

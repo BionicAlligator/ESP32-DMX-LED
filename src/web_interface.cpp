@@ -41,18 +41,16 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
   }
   else if (type == WS_EVT_DATA)
   {
-    String s = String(data, len);
-    Serial.println(s);
+    String msg = String(data, len);
+    Serial.println("Received message from client: " + msg);
 
     DynamicJsonBuffer jsonBuffer;
-    JsonObject &json = jsonBuffer.parseObject(s);
+    JsonObject &json = jsonBuffer.parseObject(msg);
 
-    // TODO: Need to re-write this.  Currently causes panic if JSON does not contain both state and dmx_universe
-    // const char *state = json["status"]["state"];
-    // Serial.printf("State: %s\n", state);
-
-    const char *dmx_universe = json["config"]["dmx_universe"];
-    Serial.printf("DMX Universe: %s\n", dmx_universe);
+    for (auto node = json.begin(); node != json.end(); ++node)
+    {
+      Serial.printf("Received: %s = %s\n", node->key, node->value.as<char *>());
+    }
   }
 }
 

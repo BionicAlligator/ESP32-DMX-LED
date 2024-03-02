@@ -12,6 +12,6 @@ export class FactoryResetComponent {
 
   onClick() {
     console.log("Reset clicked");
-    this.modelChangesFromClient.send({ status: { state: "reset" } });
+    this.modelChangesFromClient.send({ status_state: "reset" });
   }
 }
