@@ -9,7 +9,8 @@ void spiffs_config_begin_and_reformat_if_necessary()
   SPIFFS.begin(true);
 }
 
-JsonObject& spiffs_config_read() {
+JsonObject &spiffs_config_read()
+{
   Log.println("mounting FS...");
   spiffs_config_begin_and_reformat_if_necessary();
 
@@ -51,24 +52,33 @@ String spiffs_config_get(String name)
 {
   JsonObject &json = spiffs_config_read();
 
-  if (&json==NULL) {
-      return (String)NULL; // TODO something better than returning nulls
-  } else {
+  if (&json == NULL)
+  {
+    return (String)NULL; // TODO something better than returning nulls
+  }
+  else
+  {
     return json[name];
   }
-
 }
 
 void spiffs_config_set(String name, String value)
 {
-  Log.print("Saving config");
+  Log.println("Saving config: " + name + " = " + value);
 
   JsonObject &json = spiffs_config_read();
 
-  if (&json==NULL) {
-      return ;
-  } else {
-    json[name] = value;
+  if (&json == NULL)
+  {
+    return;
+  }
+  else
+  {
+    json["wifi_manager_dmx_port1_artnet_universe"] = "123";
+    // json[name] = value;
+
+    Log.println("New JSON: " + name + " = " + json[name].as<String>());
+
     File configFile = SPIFFS.open("/config.json", "w");
 
     if (!configFile)
@@ -78,13 +88,15 @@ void spiffs_config_set(String name, String value)
     else
     {
       Log.print("JSON config file: ");
-      json.printTo(Log);
+      // TODO: JEFF This should be printing to Log but core dumps when we do (hence temporarily set to Serial)
+      json.printTo(Serial);
       json.printTo(configFile);
       configFile.close();
     }
   }
 }
 
-void spiffs_config_clear() {
+void spiffs_config_clear()
+{
   SPIFFS.remove("/config.json");
 }

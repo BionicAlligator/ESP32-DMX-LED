@@ -12,6 +12,7 @@
 #include <spiffs_config.h>
 #include <WebLog.h>
 #include <SPIFFS.h>
+#include <DeviceState.h>
 
 #include <ArduinoJson.h>
 
@@ -50,6 +51,13 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
     for (auto node = json.begin(); node != json.end(); ++node)
     {
       Serial.printf("Received: %s = %s\n", node->key, node->value.as<char *>());
+
+      if (strcmp(node->key, "config_dmx_universe") == 0)
+      {
+        Serial.println("Setting Port 1 DMX Universe");
+        device_state.set_dmx_port1_artnet_universe(node->value.as<unsigned int>());
+        Serial.printf("Port 1 DMX Universe set to %d\n", device_state.get_dmx_port1_artnet_universe());
+      }
     }
   }
 }

@@ -6,7 +6,7 @@ import { ModelSynchroniser } from '../model-synchroniser';
   selector: 'app-dmx-universe',
   standalone: true,
   imports: [CommonModule],
-  template: `<p>DMX Universe: <input #dmx_universe [value]="dmxNodeModel.status.uptime_millis" (keyup.enter)="setUniverse(dmx_universe.value)" (blur)="setUniverse(dmx_universe.value); dmx_universe.value = ''" /></p>`
+  template: `<p>DMX Universe: <input #dmx_universe [value]="1" (keyup.enter)="setUniverse(dmx_universe.value)" (blur)="setUniverse(dmx_universe.value); dmx_universe.value = ''" /></p>`
 })
 
 export class DmxUniverseComponent {

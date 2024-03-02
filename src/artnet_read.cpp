@@ -1,4 +1,5 @@
 #include <artnet_read.h>
+#include <DeviceState.h>
 #include <spiffs_config.h>
 #include <WebLog.h>
 
@@ -6,7 +7,6 @@
 const bool ARTNET_DMX_DEBUG = true;
 
 ArtnetWifi _artnet;
-int dmx_port1_artnet_universe = 1;
 
 u_int8_t artnet_dmx_frames[ARTNET_MAX_UNIVERSES][ARTNET_MAX_CHANNELS_PER_UNIVERSE];
 
@@ -65,8 +65,7 @@ void _onDmxFrame(uint16_t artnet_universe, uint16_t length, uint8_t sequence, ui
 
 void artnet_setup()
 {
-  dmx_port1_artnet_universe = atoi(spiffs_config_get("wifi_manager_dmx_port1_artnet_universe").c_str());
-  Log.printf("artnet_read: setting dmx_port1_artnet_universe to %d\n", dmx_port1_artnet_universe);
+  Log.println("Starting ArtNet");
   _artnet.setArtDmxCallback(_onDmxFrame);
   _artnet.begin();
 }
@@ -83,7 +82,7 @@ int read_from_artnet(u_int8_t *data)
 
     for (u_int16_t c = 0; c < channels; c++)
     {
-      data[c + 1] = artnet_dmx_frames[dmx_port1_artnet_universe][c];
+      data[c + 1] = artnet_dmx_frames[device_state.get_dmx_port1_artnet_universe()][c];
     }
 
     return 1;

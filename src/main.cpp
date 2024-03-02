@@ -4,6 +4,7 @@
 #include <artnet_read.h>
 #include <web_interface.h>
 #include <wifi_manager.h>
+#include <DeviceState.h>
 #include <WebLog.h>
 
 // Should we operate as a WiFi Art-Net node, reading Art-Net over WiFi and re-transmitting it as DMX?
@@ -66,6 +67,8 @@ void setup()
   // TODO: Slow blink LED = Starting Up
 
   wifi_manager_setup();
+
+  device_state.setup();
 
   artnet_setup();
 
