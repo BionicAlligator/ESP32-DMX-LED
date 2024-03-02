@@ -16,97 +16,48 @@ const int MAX_UPDATE_PERIOD = 1000 / MIN_DMX_REFRESH_RATE; // milliseconds
 u_int8_t dmx_data[512];
 unsigned long lastUpdate = millis();
 
-/*
-JEFF's TODO before battle of the bands
+/* =-=-=-= BACKLOG OF WORK =-=-=-=
 
-webpage
-For status:
+DYNAMIC WEB INTERFACE
+Move to a single dynamically updated web page that shows and allows updates to all parameters
+Enable configuration to be changed and applied (or reset) without the need for a reboot
+
+Status (read-only):
+- Uptime
 - IP address
-- Configuration parameters
-- dynamic updates on webpage? observables? reactjs?
-For configuration:
-- No reboots, click and update configuration parameters
+- Signal Strength
+- State (running, resetting, etc)
 
-*/
-/* =-=-=-= BACKLOG OF WORK =-=-=-= */
+Configurable parameters (read-write):
+- Hostname
+- WiFi SSID & Password
+- DMX Universe
+- DMX Update Frequencies (max and min)
+- DMX Channel Values
+- DMX Receiver (e.g: LED strip driver) / ArtNet-to-DMX Gateway Mode
 
-// WEB INTERFACE TODOs
+Angular app is integrated into the normal PIO build
+Eliminate risk of someone injecting code within the hostname (or other config parameters) that they set from the captive portal & web interface
+Track down bug where sometimes the custom parameters entered on captive portal are not saved/applied (in this instance, node comes up on artnet.local)
 
-// Move to a single dynamically updated model that drives all components (i.e. remove websocketsubscription from individual component)
-/*
-that is, extend two way binding into our web socket message json
-
-this.millis = model$.get("status/millis");
-
-model.put("status/state", "reset");
-*/
-
-// Get ng deploy to push built app to data/www staging area
-// Eliminate risk of someone injecting code within the hostname (or other config parameters) that they set from the captive portal
-
-// Sprint Goal: know we are ready to run the show (box created and tested with real lights, ideally with audience)
-// DONE Tidy up code
-// NOT OUR PROBLEM Configure Router and PC (SSID, Password, Physical Location)
-// DONE Create case (final assembly)
-// DONE MDNS
-// DONE Web Interface
-// DONE First Time Setup (Interactive WiFi Initialisation)
-// DONE Web universe config
-// DONE Test with actual lights
-// DONE Test during school assemblies (with full audience)
-// DONE Web DNS name config
-
-// DONE Install 5V LED
-// DONE Test DMX transmit and receive with second device
-// DONE Web debug console (display log messages)
-// DONE Complete physical build of second device
-// DONE Unique WiFi AP name
-// DONE Create and freeze Release 1 code version
-
-// Track down bug where sometimes the custom parameters entered on captive portal are not saved/applied (in this instance, node comes up on artnet.local)
-// Add /universe/<new-artnet-universe> web endpoint to enable universe switching without needing a full reset
-// Add /name/<new-node-name> web endpoint to enable node name (MDNS hostname) to be changed without needing a full reset
-// Onboard LED control
-
-// Rename DMX files
-// Tidy code
-
-// Table of DMX values on web page
-
-// Fix orange wire on first device (used when receiving)
-// Test second device as a receiver
-// Web Mode config (RX/TX)
-// Web LED strip control
-
-// Second DMX port
-// Document
-
-// TO REVIEW...
-
-/* Production build for v1.0.0
- - Build final firmware for upcoming deployment
- - Smoke test
-*/
-
-/* Graceful Artnet degradation
+Graceful Artnet degradation
  - When Artnet updates are not occuring, do something sensible
  - When Wifi isn't available (or drops out), do something sensible
- - Fire test in wifi-congested areas
-*/
+ - DONE Fire test in wifi-congested areas
 
-/* Deployment: We Will Rock You!
- */
-
-/* Full LED string support
+Onboard LED control
+Full LED string support
  - Support the longest LED string that Vincent has (300 LED?)
-*/
-
-/* LED string mounting
+LED string mounting
  - Flexibly mount LED strings on stages
-*/
+Second DMX port
 
-/* Deployment: Battle of the bands
- */
+Fix orange wire on first device (used when receiving)
+Test second device as a DMX receiver (e.g: controlling LED strip)
+Rename DMX files
+Document
+
+*/
 
 void setup()
 {
